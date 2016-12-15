@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <context:component-scan base-package="com.sdo.dw.rtc">
+        <context:include-filter type="regex" expression=".controllor.*"/>
+    </context:component-scan>
+
+    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />
+
+
+    <!--读取配置文件-->
+    <bean id="prop" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:global-config.properties</value>
+            </list>
+        </property>
+        <!-- 设置编码格式 -->
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="locations" value="classpath:sqlite.properties"/>
+        <!-- 设置编码格式 -->
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
+
+    <!-- sqlite内存数据库连接池-->
+    <bean id="sqLiteDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="poolProperties">
+            <bean class="org.apache.tomcat.jdbc.pool.PoolProperties">
+                <property name="driverClassName" value="${jdbc.driverClassName}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="minIdle" value="${tomcat.jdbc.pool.minIdle}"/>
+                <property name="maxActive" value="${tomcat.jdbc.pool.maxActive}"/>
+                <!-- 数据库连接池配置 -->
+                <!-- 初始化连接数量 -->
+                <property name="initialSize" value="${tomcat.jdbc.pool.initialSize}"/>
+                <!-- 最大连接数量 -->
+                <!-- 最小空闲连接数量 -->
+                <property name="removeAbandoned" value="${tomcat.jdbc.pool.removeAbandoned}"/>
+                <property name="removeAbandonedTimeout" value="${tomcat.jdbc.pool.removeAbandonedTimeout}"/>
+                <!-- 验证连接是否有效 -->
+                <property name="validationQuery" value="${tomcat.jdbc.pool.validationQuery}"/>
+                <!-- 验证失败时，是否将连接从池中丢弃 -->
+                <property name="testWhileIdle" value="${tomcat.jdbc.pool.testWhileIdletrue}"/>
+                <!-- 把空闲时间超过minEvictableIdleTimeMillis毫秒的连接断开,直到连接池中的连接数到minIdle为止(毫秒，30分钟) -->
+                <property name="timeBetweenEvictionRunsMillis" value="${tomcat.jdbc.pool.timeBetweenEvictionRunsMillis}"/>
+                <!-- 连接池中连接可空闲的时间（毫秒，5分钟） -->
+                <property name="minEvictableIdleTimeMillis" value="${tomcat.jdbc.pool.minEvictableIdleTimeMillis}"/>
+                <!-- 在每次空闲连接回收器线程(如果有)运行时检查的连接数量 -->
+                <property name="numTestsPerEvictionRun" value="${tomcat.jdbc.pool.numTestsPerEvictionRun}"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 启动触发器的配置开始
+    <bean name="startQuartz" lazy-init="false" autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="offsetHisJobTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    &lt;!&ndash; quartz-2.x的配置 &ndash;&gt;
+    <bean id="offsetHisJobTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="offsetHisJobDetail"/>
+        <property name="cronExpression" value="*/1 * * * * ?"/>
+    </bean>
+
+    &lt;!&ndash; job的配置开始 &ndash;&gt;
+    <bean id="offsetHisJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="offsetHisServiceImpl"/>
+        <property name="targetMethod" value="test"/>
+    </bean>-->
+
+
+</beans>
