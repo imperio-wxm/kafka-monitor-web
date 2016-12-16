@@ -14,7 +14,7 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, './dist'),
-        publicPath: path.join(__dirname, 'dist/'),
+        publicPath: 'http://127.0.0.1:9090/dist/',
         filename: '[name].js'
     },
 	resolve: {

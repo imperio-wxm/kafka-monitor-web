@@ -57,7 +57,8 @@ class MainMenu extends React.Component {
           <div className="ant-layout-topaside">
               <div className="ant-layout-header">
                 <div className="ant-layout-wrapper">
-                    <Menu onClick={this.handleClick} mode="horizontal"
+                    <div className="ant-layout-logo"></div>
+                    <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
                         defaultSelectedKeys={[this.state.current]} style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
                             <Link to="/MainPanel"><Icon type="appstore" />Brokers</Link>
@@ -97,7 +98,7 @@ class MainMenu extends React.Component {
 render((
     <Router history={hashHistory} >
         <Route path="/" component={MainMenu}>
-            <Route path="MainPanel" component={MainPanel} />
+            <IndexRoute path="MainPanel" component={MainPanel} />
         </Route>
     </Router>
 ), document.getElementById('app'));
