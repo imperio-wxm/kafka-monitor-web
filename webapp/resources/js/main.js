@@ -31,8 +31,7 @@ class MainMenu extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            current: '',
-            username: ''
+            current: ''
         }
     }
 
@@ -43,13 +42,6 @@ class MainMenu extends React.Component {
     }
 
     componentDidMount() {
-        this.getUser()
-    }
-
-    getUser = () => {
-        this.setState({
-            username: 'luozh'
-        })
     }
 
     render() {
@@ -59,7 +51,7 @@ class MainMenu extends React.Component {
                 <div className="ant-layout-wrapper">
                     <div className="ant-layout-logo"></div>
                     <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
-                        defaultSelectedKeys={[this.state.current]} style={{lineHeight: '64px'}}>
+                        style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
                             <Link to="/MainPanel"><Icon type="appstore" />Brokers</Link>
                         </Menu.Item>
@@ -72,7 +64,7 @@ class MainMenu extends React.Component {
                     </Menu>
                 </div>
               </div>
-              
+
               <div className="ant-layout-wrapper">
                 <div className="ant-layout-container">
                   <div className="ant-layout-content">
