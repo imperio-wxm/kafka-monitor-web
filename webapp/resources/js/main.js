@@ -72,20 +72,11 @@ class MainMenu extends React.Component {
                     </Menu>
                 </div>
               </div>
-
+              
               <div className="ant-layout-wrapper">
-                <div className="ant-layout-breadcrumb">
-                  <Breadcrumb>
-                    <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应用列表</Breadcrumb.Item>
-                    <Breadcrumb.Item>某应用</Breadcrumb.Item>
-                  </Breadcrumb>
-                </div>
                 <div className="ant-layout-container">
                   <div className="ant-layout-content">
-                    <div style={{ height: 240 }}>
                       { this.props.children }
-                    </div>
                   </div>
                 </div>
               </div>
