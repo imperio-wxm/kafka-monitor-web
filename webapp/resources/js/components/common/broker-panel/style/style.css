@@ -1,0 +1,27 @@
+.main-panel .ant-row {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.main-panel .ant-row > div {
+  padding: 10px 10px;
+}
+
+.panel-image *{
+  vertical-align:middle;
+  height: 120px;
+}
+
+.panel-image > img {
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+}
+
+.panel-image > span {
+  display: inline-block;
+  font-size: 50px;
+  text-align:center;
+  line-height:120px;
+  width: 100px;
+  padding-left:40px;
+}

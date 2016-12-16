@@ -9,7 +9,7 @@ import React from 'react'
 import { render } from 'react-dom'
 
 // 引入React-Router模块
-import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink} from 'react-router'
+import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink, browserHistory } from 'react-router'
 
 // 引入Antd的导航组件
 import { Menu, Icon, Breadcrumb,Switch } from 'antd'
@@ -23,6 +23,7 @@ import './main.css'
 
 // import 自定义组件
 import MainPanel from './components/common/main-panel/main-panel.js'
+import BrokerPanel from './components/common/broker-panel/broker-panel.js'
 
 const ACTIVE = { color: 'red' }
 
@@ -53,12 +54,12 @@ class MainMenu extends React.Component {
                     <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
                         style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
-                            <Link to="/MainPanel"><Icon type="appstore" />Brokers</Link>
+                            <IndexLink to="/mainPanel"><Icon type="home" />Home</IndexLink>
                         </Menu.Item>
-                        <Menu.Item key="app">
-                            <Icon type="appstore"/>Navigation Two
+                        <Menu.Item key="2">
+                            <Link to="/brokerPanel"><Icon type="appstore"/>Broker</Link>
                         </Menu.Item>
-                        <Menu.Item key="alipay">
+                        <Menu.Item key="3">
                             <a href="https://ant.design" target="_blank" rel="noopener noreferrer">Navigation Four - Link</a>
                         </Menu.Item>
                     </Menu>
@@ -81,7 +82,8 @@ class MainMenu extends React.Component {
 render((
     <Router history={hashHistory} >
         <Route path="/" component={MainMenu}>
-            <IndexRoute path="MainPanel" component={MainPanel} />
+            <Route path="mainPanel" component={MainPanel} />
+            <Route path="brokerPanel" component={BrokerPanel} />
         </Route>
     </Router>
 ), document.getElementById('app'));
