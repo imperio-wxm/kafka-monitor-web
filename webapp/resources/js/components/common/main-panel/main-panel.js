@@ -75,41 +75,43 @@ export default class MainPanel extends React.Component{
 
     render() {
         return (
-          <div className= "main-panel" style={{ background: '#ECECEC', padding: '10px' }}>
-              <Row>
-                <Col span="6">
-                  <Card title="Broker 总数" extra={<a href="#">详情</a>} bordered={false}>
+          <div className="ant-layout-container">
+            <div className= "main-panel" style={{ background: '#ECECEC', padding: '10px' }}>
+                <Row>
+                  <Col span="6">
+                    <Card title="Broker 总数" extra={<a href="#">详情</a>} bordered={false}>
+                        <div className="panel-image">
+                          <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
+                          <span>{this.state.brokersNum}</span>
+                        </div>
+                    </Card>
+                  </Col>
+                  <Col span="6">
+                    <Card title="Group 总数" extra={<a href="#">详情</a>} bordered={false}>
                       <div className="panel-image">
                         <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
-                        <span>{this.state.brokersNum}</span>
+                        <span>{this.state.groupsNum}</span>
                       </div>
-                  </Card>
-                </Col>
-                <Col span="6">
-                  <Card title="Group 总数" extra={<a href="#">详情</a>} bordered={false}>
-                    <div className="panel-image">
-                      <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
-                      <span>{this.state.groupsNum}</span>
-                    </div>
-                  </Card>
-                </Col>
-                <Col span="6">
-                  <Card title="Topic 总数" extra={<a href="#">详情</a>} bordered={false}>
-                    <div className="panel-image">
-                      <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
-                      <span>{this.state.topicsNum}</span>
-                    </div>
-                  </Card>
-                </Col>
-                <Col span="6">
-                  <Card title="Consumer 总数" extra={<a href="#">详情</a>} bordered={false}>
-                    <div className="panel-image">
-                      <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
-                      <span>{this.state.consumersNum}</span>
-                    </div>
-                  </Card>
-                </Col>
-              </Row>
+                    </Card>
+                  </Col>
+                  <Col span="6">
+                    <Card title="Topic 总数" extra={<a href="#">详情</a>} bordered={false}>
+                      <div className="panel-image">
+                        <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
+                        <span>{this.state.topicsNum}</span>
+                      </div>
+                    </Card>
+                  </Col>
+                  <Col span="6">
+                    <Card title="Consumer 总数" extra={<a href="#">详情</a>} bordered={false}>
+                      <div className="panel-image">
+                        <img alt="example" src="https://avatars2.githubusercontent.com/u/12928352?v=3&s=460" />
+                        <span>{this.state.consumersNum}</span>
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+            </div>
           </div>
         );
     }

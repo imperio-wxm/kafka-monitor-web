@@ -2,19 +2,42 @@
  * Created by weiximing.imperio on 2016/12/14.
  */
 import React from 'react'
-import { render } from 'react-dom'
 
-// 引入React-Router模块
-import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink, browserHistory } from 'react-router'
-import { Card, Col, Row } from 'antd';
+import { Link } from 'react-router';
 import { Table } from 'antd';
-import { Menu, Breadcrumb, Icon } from 'antd';
-const SubMenu = Menu.SubMenu;
+import { Collapse } from 'antd';
+const Panel = Collapse.Panel;
 
-import CollapseTable from '../../tables/collapse-table/collapse-table.js'
+const columns = [{
+      title: 'Name',
+      dataIndex: 'name',
+    }, {
+      title: 'Age',
+      dataIndex: 'age',
+    }, {
+      title: 'Address',
+      dataIndex: 'address',
+    }
+];
+const data = [{
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    }, {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    }, {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+    }
+];
 
-
-export default class BrokerPanel extends React.Component{
+export default class CollapseTable extends React.Component{
     //初始化
 
     //{"brokerName":"0","host":"192.168.18.74","port":"9092","version":"1","jmx_port":"-1","createdTimestamp":"1481857477680","modifyTimestamp":"1481857477680","timestamp":"1481857477678","controller":true}
@@ -79,49 +102,22 @@ export default class BrokerPanel extends React.Component{
     componentDidMount() {
         //this.fetchFn()
     }
-    //  <Table
-    //    columns={columns}
-    //    expandedRowRender={record => <InsideTable />}
-    //    dataSource={data}
-    //    className="table"
-    //  />
-
-    callback = (key) =>  {
-      console.log(key);
-    }
 
     render() {
         return (
           <div>
-             <div className="ant-layout-breadcrumb">
-               <Breadcrumb separator=">">
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="">Brokers</Breadcrumb.Item>
-              </Breadcrumb>
-             </div>
-             <div className="ant-layout-container">
-                <div id="broker-panel">
-                 <aside className="ant-layout-sider">
-                   <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']}>
-                     <SubMenu key="sub1" title={<span><Icon type="user" />Broker详情</span>}>
-                       <Menu.Item key="1">图形概览</Menu.Item>
-                       <Menu.Item key="2"><Link to="/collapseTable">详细信息</Link></Menu.Item>
-                     </SubMenu>
-                   </Menu>
-                 </aside>
-                 <div className="ant-layout-content">
-                      { this.props.children }
-                 </div>
-               </div>
-             </div>
-        </div>
+            <Collapse defaultActiveKey={['1']} onChange={this.callback}>
+               <Panel header="Broker1" key="1">
+                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
+               </Panel>
+               <Panel header="Broker2" key="2">
+                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
+               </Panel>
+               <Panel header="Broker3" key="3">
+                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
+               </Panel>
+            </Collapse>
+          </div>
         );
     }
 }
-
-// 配置路由
-render((
-    <Router history={hashHistory} >
-        <Route path="collapseTable" component={CollapseTable} />
-    </Router>
-), document.getElementById("children-panel"));

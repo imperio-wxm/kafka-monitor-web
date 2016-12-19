@@ -54,7 +54,7 @@ class MainMenu extends React.Component {
                     <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
                         style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
-                            <IndexLink  to="/"><Icon type="home" />Home</IndexLink>
+                            <Link to="/"><Icon type="home" />Home</Link>
                         </Menu.Item>
                         <Menu.Item key="2">
                             <Link to="/brokerPanel"><Icon type="appstore"/>Broker</Link>
@@ -66,11 +66,9 @@ class MainMenu extends React.Component {
                 </div>
               </div>
 
-              <div className="ant-layout-wrapper">
-                <div className="ant-layout-container">
-                  <div className="ant-layout-content">
-                      { this.props.children }
-                  </div>
+              <div className="ant-layout-content">
+                <div id="children-panel">
+                  { this.props.children }
                 </div>
               </div>
           </div>
