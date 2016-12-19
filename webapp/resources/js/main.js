@@ -54,7 +54,7 @@ class MainMenu extends React.Component {
                     <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
                         style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
-                            <IndexLink to="/mainPanel"><Icon type="home" />Home</IndexLink>
+                            <IndexLink  to="/"><Icon type="home" />Home</IndexLink>
                         </Menu.Item>
                         <Menu.Item key="2">
                             <Link to="/brokerPanel"><Icon type="appstore"/>Broker</Link>
@@ -82,8 +82,8 @@ class MainMenu extends React.Component {
 render((
     <Router history={hashHistory} >
         <Route path="/" component={MainMenu}>
-            <Route path="mainPanel" component={MainPanel} />
-            <Route path="brokerPanel" component={BrokerPanel} />
+          <IndexRoute component={MainPanel} />
+          <Route path="brokerPanel" component={BrokerPanel} />
         </Route>
     </Router>
-), document.getElementById('app'));
+), document.getElementById("app"));
