@@ -49,61 +49,17 @@ export default class CollapseTable extends React.Component{
             hostList: [],
         }
     }
-
-    // 获取数据
-    fetchFn = () => {
-        var urls = [
-          "http://localhost:8080/monitor/brokerDetailsView.do",
-          "http://localhost:8080/monitor/topicListView.do",
-          "http://localhost:8080/monitor/groupDetailView.do"
-        ];
-
-        // fetch('http://localhost:8080/monitor/brokerDetailsView.do')
-        //     .then((res) => {
-        //       return res.json()
-        //     })
-        //     .then((data) => {
-        //       var data = data;
-        //       this.setState({
-        //         brokerNum : data.length
-        //       })
-        //     })
-        //     .catch((e) => {
-        //       console.log(e.message)
-        //     })
-
-        var allConsumersNum = 0;
-
-        Promise.all(urls.map(url =>
-            fetch(url).then(resp => resp.text())
-        )).then(respList => {
-            var brokersObj = JSON.parse(respList[0]);
-            var topicsObj = JSON.parse(respList[1]);
-            var groupObj = JSON.parse(respList[2]);
-            var allConsumersNum = 0;
-
-            for(var o in groupObj){
-                allConsumersNum += parseInt(groupObj[o].consumersNum);
-                console.log(groupObj[o].groupName + " : " + groupObj[o].consumersNum)
-            }
-
-            this.setState({
-               brokersNum : brokersObj.length,
-               topicsNum : topicsObj.length,
-               groupsNum : groupObj.length,
-               consumersNum : allConsumersNum
-            })
-          })
-          .catch((e) => {
-            console.log(e.message)
-          })
-    }
-
+    
     componentDidMount() {
         //this.fetchFn()
     }
 
     render() {
+        var brokerNum = this.props.brokerNum;
+        var brokerInfo = this.props.brokerInfo;
+        console.log("子组件" + brokerNum);
+        console.log("子组件" + brokerInfo);
+
         return (
           <div>
             <Collapse defaultActiveKey={['1']} onChange={this.callback}>
