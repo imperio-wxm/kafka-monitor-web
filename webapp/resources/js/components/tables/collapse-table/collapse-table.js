@@ -44,12 +44,9 @@ export default class CollapseTable extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            brokersNum: 0,
-            brokerNameList: [],
-            hostList: [],
         }
     }
-    
+
     componentDidMount() {
         //this.fetchFn()
     }
@@ -57,14 +54,18 @@ export default class CollapseTable extends React.Component{
     render() {
         var brokerNum = this.props.brokerNum;
         var brokerInfo = this.props.brokerInfo;
-        console.log("子组件" + brokerNum);
-        console.log("子组件" + brokerInfo);
+        console.log(brokerNum);
+        console.log(brokerInfo);
 
         return (
           <div>
             <Collapse defaultActiveKey={['1']} onChange={this.callback}>
-               <Panel header="Broker1" key="1">
-                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
+               <Panel header={brokerInfo[0].host} key="1">
+                 <Table columns={columns} dataSource={data} size="small" pagination={false}>
+                    <ColumnGroup title="Name">
+                        <<Column></Column>
+                    </ColumnGroup>
+                 </Table>
                </Panel>
                <Panel header="Broker2" key="2">
                  <Table columns={columns} dataSource={data} size="small" pagination={false}/>

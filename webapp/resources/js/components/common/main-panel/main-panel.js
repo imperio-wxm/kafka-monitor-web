@@ -27,7 +27,7 @@ export default class MainPanel extends React.Component{
           "http://localhost:8080/monitor/topicListView.do",
           "http://localhost:8080/monitor/groupDetailView.do"
         ];
-        
+
         HTTPUtil.URLs(urls).then((text) => {
           console.log(text);
            //处理 请求success

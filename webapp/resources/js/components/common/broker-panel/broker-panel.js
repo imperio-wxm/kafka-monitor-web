@@ -29,40 +29,40 @@ export default class BrokerPanel extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            brokerNum: 0,
+            brokersNum: 0,
             brokerInfo: []
         }
     }
 
     componentDidMount() {
-        // var urls = [
-        //   "http://localhost:8080/monitor/brokerDetailsView.do"
-        // ];
-        //
-        // HTTPUtil.URLs(urls).then((text) => {
-        //   console.log(text);
-        //    //处理 请求success
-        //    if(text.size != 0 ){
-        //        //我们假设业务定义code为0时，数据正常
-        //        var brokersObj = JSON.parse(text[0]);
-        //        var brokerDetails = [];
-        //
-        //        for(var o in brokersObj){
-        //            brokerDetails.push(brokersObj[o]);
-        //        }
-        //
-        //        this.setState({
-        //           brokersNum : brokersObj.length,
-        //           brokerInfo : brokerDetails
-        //        })
-        //    }else{
-        //         //处理自定义异常
-        //        console.log("fetch exception " + text.code);
-        //    }
-        // },(text)=>{
-        //     //TODO 处理请求fail
-        //     console.log("fetch fail " + text.code);
-        // })
+        var urls = [
+          "http://localhost:8080/monitor/brokerDetailsView.do"
+        ];
+
+        HTTPUtil.URLs(urls).then((text) => {
+          console.log(text);
+           //处理 请求success
+           if(text.size != 0 ){
+               //我们假设业务定义code为0时，数据正常
+               var brokersObj = JSON.parse(text[0]);
+               var brokerDetails = [];
+
+               for(var o in brokersObj){
+                   brokerDetails.push(brokersObj[o]);
+               }
+
+               this.setState({
+                  brokersNum : brokersObj.length,
+                  brokerInfo : brokerDetails
+               })
+           }else{
+                //处理自定义异常
+               console.log("fetch exception " + text.code);
+           }
+        },(text)=>{
+            //TODO 处理请求fail
+            console.log("fetch fail " + text.code);
+        })
     }
 
     callback = (key) =>  {
@@ -70,9 +70,6 @@ export default class BrokerPanel extends React.Component {
     }
 
     render() {
-        var brokerList = this.state.brokerInfo.map(function(brokers) {
-           return <CollapseTable brokers={brokers} key={broker.brokerName} />;
-        });
         return (
           <div className="ant-layout-wrapper">
              <div className="ant-layout-breadcrumb">
@@ -87,7 +84,7 @@ export default class BrokerPanel extends React.Component {
                     <div></div>
                  </TabPane>
                  <TabPane tab={<span><Icon type="file-text" />Broker详细信息</span>} key="2">
-                    <CollapseTable brokerNum={this.state.brokerNum} brokerInfo={this.state.brokerInfo}/>
+                    <CollapseTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
                  </TabPane>
                </Tabs>
              </div>
