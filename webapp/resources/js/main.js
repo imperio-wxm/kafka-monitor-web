@@ -24,6 +24,8 @@ import './main.css'
 // import 自定义组件
 import MainPanel from './components/common/main-panel/main-panel.js'
 import BrokerPanel from './components/common/broker-panel/broker-panel.js'
+import TopicPanel from './components/common/topic-panel/topic-panel.js'
+import GroupPanel from './components/common/group-panel/group-panel.js'
 
 const ACTIVE = { color: 'red' }
 
@@ -57,10 +59,13 @@ class MainMenu extends React.Component {
                             <Link to="/"><Icon type="home" />Home</Link>
                         </Menu.Item>
                         <Menu.Item key="2">
-                            <Link to="/brokerPanel"><Icon type="appstore"/>Broker</Link>
+                            <Link to="/brokerPanel"><Icon type="appstore"/>Brokers</Link>
                         </Menu.Item>
                         <Menu.Item key="3">
-                            <a href="https://ant.design" target="_blank" rel="noopener noreferrer">Navigation Four - Link</a>
+                            <Link to="/groupPanel"><Icon type="appstore"/>Groups</Link>
+                        </Menu.Item>
+                        <Menu.Item key="4">
+                            <Link to="/topicPanel"><Icon type="appstore"/>Topics</Link>
                         </Menu.Item>
                     </Menu>
                 </div>
@@ -82,6 +87,8 @@ render((
         <Route path="/" component={MainMenu}>
           <IndexRoute component={MainPanel} />
           <Route path="brokerPanel" component={BrokerPanel} />
+          <Route path="topicPanel" component={TopicPanel} />
+          <Route path="groupPanel" component={GroupPanel} />
         </Route>
     </Router>
 ), document.getElementById("app"));

@@ -15,13 +15,13 @@ import { Tabs, Select } from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 
-import CollapseTable from '../../tables/collapse-table/collapse-table.js'
+import PaginationTable from '../../tables/pagination-table/pagination-table.js'
 
 // 引入主体样式文件
 import './style/style.css'
 
 
-export default class BrokerPanel extends React.Component{
+export default class TopicPanel extends React.Component{
     //初始化
 
     //{"brokerName":"0","host":"192.168.18.74","port":"9092","version":"1","jmx_port":"-1","createdTimestamp":"1481857477680","modifyTimestamp":"1481857477680","timestamp":"1481857477678","controller":true}
@@ -105,18 +105,13 @@ export default class BrokerPanel extends React.Component{
              <div className="ant-layout-breadcrumb">
                <Breadcrumb separator=">">
                   <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="">Brokers</Breadcrumb.Item>
+                  <Breadcrumb.Item href="">Topics</Breadcrumb.Item>
               </Breadcrumb>
              </div>
              <div className="ant-layout-container">
-               <Tabs tabPosition={"left"}>
-                 <TabPane tab={<span><Icon type="line-chart" />Broker集群图形</span>} key="1">
-                    <div></div>
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="file-text" />Broker详细信息</span>} key="2">
-                    <CollapseTable />
-                 </TabPane>
-               </Tabs>
+                <div className="pagination-table">
+                  <PaginationTable />
+                </div>
              </div>
         </div>
         );
