@@ -67,7 +67,6 @@ export default class BrokerInfoTable extends React.Component{
             <Collapse defaultActiveKey={['0']}>
                {
                    brokerInfo.map((item, index)=>{
-                       console.log(item);
                        const data = [];
 
                        let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));

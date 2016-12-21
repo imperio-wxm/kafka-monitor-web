@@ -15,7 +15,7 @@ import { Tabs, Select } from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 
-import PaginationTable from '../../tables/pagination-table/pagination-table.js'
+import TopicsTable from '../../tables/topics-table/topics-table.js'
 import HTTPUtil from '../../../actions/fetch/fetch.js'
 
 // 引入主体样式文件
@@ -29,8 +29,38 @@ export default class TopicPanel extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            topicNameList: []
+            topicNameList: [],
+            topicInfo: []
         }
+    }
+
+    getTopicInfoList = (topicsObj) => {
+        let urls = [];
+
+        console.log("获取topic详细信息");
+        console.log(topicsObj);
+
+        for(let i = 0; i < topicsObj.length;i++) {
+            urls.push(
+              "http://localhost:8080/monitor/topicDetailView.do?topicName=" + topicsObj[i]
+            );
+        }
+
+        HTTPUtil.URLs(urls).then((text) => {
+           //处理 请求success
+           if(text.size != 0 ){
+               this.setState({
+                  topicInfo : text,
+                  topicNameList: topicsObj
+               })
+           }else{
+                //处理自定义异常
+               console.log("fetch exception " + text.code);
+           }
+        },(text)=>{
+            //TODO 处理请求fail
+            console.log("fetch fail " + text.code);
+        })
     }
 
     componentDidMount() {
@@ -39,15 +69,12 @@ export default class TopicPanel extends React.Component{
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
-          console.log(text);
            //处理 请求success
            if(text.size != 0 ){
                //我们假设业务定义code为0时，数据正常
-               let topicList = JSON.parse(text[0]);
+               let topicsObj = JSON.parse(text[0]);
 
-               this.setState({
-                  topicNameList : topicList
-               })
+               this.getTopicInfoList(topicsObj);
            }else{
                 //处理自定义异常
                console.log("fetch exception " + text.code);
@@ -69,7 +96,7 @@ export default class TopicPanel extends React.Component{
              </div>
              <div className="ant-layout-container">
                 <div className="pagination-table">
-                  <PaginationTable topicNameList={this.state.topicNameList}/>
+                  <TopicsTable topicNameList={this.state.topicNameList} topicInfo={this.state.topicInfo}/>
                 </div>
              </div>
         </div>

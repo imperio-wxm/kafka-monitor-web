@@ -47,11 +47,10 @@ HTTPUtil.get = function(url, params, headers) {
  * @param headers
  * @returns {Promise}
  */
-HTTPUtil.post = function(url, formData, headers) {
+HTTPUtil.post = function(url, formData) {
     return new Promise(function (resolve, reject) {
       fetch(url, {
             method: 'POST',
-            headers: headers,
             body:formData,
           }
       ).then((response) => {
@@ -70,10 +69,6 @@ HTTPUtil.post = function(url, formData, headers) {
     })
 }
 
-// Promise.all(urls.map(url =>
-//     fetch(url).then(resp => resp.text())
-// )).then(respList => {}).catch((e) => {console.log(e.message)})
-
 /**
  * 基于 fetch 封装的多URL请求
  * @param urls
@@ -84,7 +79,6 @@ HTTPUtil.post = function(url, formData, headers) {
 HTTPUtil.URLs = function(urls) {
     return Promise.all(urls.map(url =>
         fetch(url).then((response) => {
-            console.log(response);
             if (response.ok) {
                 return response.text();
             } else {
@@ -95,29 +89,5 @@ HTTPUtil.URLs = function(urls) {
           return {status:-1};
       })
 }
-
-// Promise.all(urls.map(url =>
-//     fetch(url).then(resp => resp.text())
-//   )).then(respList => {
-//     var brokersObj = JSON.parse(respList[0]);
-//     var topicsObj = JSON.parse(respList[1]);
-//     var groupObj = JSON.parse(respList[2]);
-//     var allConsumersNum = 0;
-//
-//     for(var o in groupObj){
-//         allConsumersNum += parseInt(groupObj[o].consumersNum);
-//         console.log(groupObj[o].groupName + " : " + groupObj[o].consumersNum)
-//     }
-//
-//     this.setState({
-//        brokersNum : brokersObj.length,
-//        topicsNum : topicsObj.length,
-//        groupsNum : groupObj.length,
-//        consumersNum : allConsumersNum
-//     })
-//   })
-//   .catch((e) => {
-//     console.log(e.message)
-//   })
 
 export default HTTPUtil;

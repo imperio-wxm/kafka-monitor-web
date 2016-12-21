@@ -58,7 +58,27 @@ export default class GroupPanel extends React.Component{
 
         Promise.all(urls.map(url =>
             fetch(url).then(resp => resp.text())
-        )).then(respList => {}).catch((e) => {console.log(e.message)})
+        )).then(respList => {
+            var brokersObj = JSON.parse(respList[0]);
+            var topicsObj = JSON.parse(respList[1]);
+            var groupObj = JSON.parse(respList[2]);
+            var allConsumersNum = 0;
+
+            for(var o in groupObj){
+                allConsumersNum += parseInt(groupObj[o].consumersNum);
+                console.log(groupObj[o].groupName + " : " + groupObj[o].consumersNum)
+            }
+
+            this.setState({
+               brokersNum : brokersObj.length,
+               topicsNum : topicsObj.length,
+               groupsNum : groupObj.length,
+               consumersNum : allConsumersNum
+            })
+          })
+          .catch((e) => {
+            console.log(e.message)
+          })
     }
 
     componentDidMount() {
