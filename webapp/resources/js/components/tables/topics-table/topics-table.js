@@ -10,6 +10,47 @@ const Panel = Collapse.Panel;
 import { Modal, Button } from 'antd';
 
 
+const DetailsButton = React.createClass({
+      getInitialState() {
+        return {
+          visible: false,
+          data = this.props.data
+        };
+      },
+      showModal() {
+        this.setState({
+          visible: true,
+        });
+      },
+      handleOk() {
+        console.log('Clicked OK');
+        this.setState({
+          visible: false,
+        });
+      },
+      handleCancel(e) {
+        console.log(e);
+        this.setState({
+          visible: false,
+        });
+      },
+      render() {
+        console.log(JSON.parse(this.state.data));
+        return (
+          <div>
+            <Button type="primary" onClick={this.showModal}>Open a modal dialog</Button>
+            <Modal title="Basic Modal" visible={this.state.visible}
+              onOk={this.handleOk} onCancel={this.handleCancel}
+            >
+              <p>some contents...</p>
+              <p>some contents...</p>
+              <p>some contents...</p>
+            </Modal>
+          </div>
+        );
+      },
+});
+
 function info() {
   Modal.info({
     title: 'This is a notification message',
@@ -48,7 +89,7 @@ const columns = [{
 }, {
   title: 'Detailes',
   dataIndex: 'detailes',
-  render: text => <Button onClick={info}>Info</Button>,
+  render: (text) => <DetailsButton data={text} />,
 }];
 
 const data = [];
@@ -68,14 +109,6 @@ export default class TopicsTable extends React.Component{
     //初始化
     constructor(props) {
         super(props)
-    }
-
-    // componentWillMount() {
-    //    data = [];
-    // }
-
-    componentDidMount() {
-
     }
 
     render() {
@@ -106,7 +139,7 @@ export default class TopicsTable extends React.Component{
               partitions: `${partitionList.join("")}`,
               createdTimestamp: `${createTime}`,
               modifyTimestamp: `${modifyTime}`,
-              detailes : `${"详情"}`
+              detailes : `${item}`
             });
         })
 
