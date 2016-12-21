@@ -29,7 +29,7 @@ export default class MainPanel extends React.Component{
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
-          console.log(text);
+          console.log(text[0]);
            //处理 请求success
            if(text.size != 0 ){
                //我们假设业务定义code为0时，数据正常

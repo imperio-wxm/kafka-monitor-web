@@ -16,6 +16,7 @@ const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 
 import PaginationTable from '../../tables/pagination-table/pagination-table.js'
+import HTTPUtil from '../../../actions/fetch/fetch.js'
 
 // 引入主体样式文件
 import './style/style.css'
@@ -28,75 +29,33 @@ export default class TopicPanel extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            tabPosition: 'top',
+            topicNameList: []
         }
     }
 
-    // 获取数据
-    fetchFn = () => {
+    componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/brokerDetailsView.do",
-          "http://localhost:8080/monitor/topicListView.do",
-          "http://localhost:8080/monitor/groupDetailView.do"
+          "http://localhost:8080/monitor/topicListView.do"
         ];
 
-        // fetch('http://localhost:8080/monitor/brokerDetailsView.do')
-        //     .then((res) => {
-        //       return res.json()
-        //     })
-        //     .then((data) => {
-        //       var data = data;
-        //       this.setState({
-        //         brokerNum : data.length
-        //       })
-        //     })
-        //     .catch((e) => {
-        //       console.log(e.message)
-        //     })
+        HTTPUtil.URLs(urls).then((text) => {
+          console.log(text);
+           //处理 请求success
+           if(text.size != 0 ){
+               //我们假设业务定义code为0时，数据正常
+               let topicList = JSON.parse(text[0]);
 
-        var allConsumersNum = 0;
-
-        Promise.all(urls.map(url =>
-            fetch(url).then(resp => resp.text())
-        )).then(respList => {
-            var brokersObj = JSON.parse(respList[0]);
-            var topicsObj = JSON.parse(respList[1]);
-            var groupObj = JSON.parse(respList[2]);
-            var allConsumersNum = 0;
-
-            for(var o in groupObj){
-                allConsumersNum += parseInt(groupObj[o].consumersNum);
-                console.log(groupObj[o].groupName + " : " + groupObj[o].consumersNum)
-            }
-
-            this.setState({
-               brokersNum : brokersObj.length,
-               topicsNum : topicsObj.length,
-               groupsNum : groupObj.length,
-               consumersNum : allConsumersNum
-            })
-          })
-          .catch((e) => {
-            console.log(e.message)
-          })
-    }
-
-    componentDidMount() {
-        //this.fetchFn()
-    }
-    //  <Table
-    //    columns={columns}
-    //    expandedRowRender={record => <InsideTable />}
-    //    dataSource={data}
-    //    className="table"
-    //  />
-
-    callback = (key) =>  {
-      console.log(key);
-    }
-
-    changeTabPosition = (tabPosition) => {
-      this.setState({ tabPosition });
+               this.setState({
+                  topicNameList : topicList
+               })
+           }else{
+                //处理自定义异常
+               console.log("fetch exception " + text.code);
+           }
+        },(text)=>{
+            //TODO 处理请求fail
+            console.log("fetch fail " + text.code);
+        })
     }
 
     render() {
@@ -110,7 +69,7 @@ export default class TopicPanel extends React.Component{
              </div>
              <div className="ant-layout-container">
                 <div className="pagination-table">
-                  <PaginationTable />
+                  <PaginationTable topicNameList={this.state.topicNameList}/>
                 </div>
              </div>
         </div>

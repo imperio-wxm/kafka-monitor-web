@@ -84,6 +84,7 @@ HTTPUtil.post = function(url, formData, headers) {
 HTTPUtil.URLs = function(urls) {
     return Promise.all(urls.map(url =>
         fetch(url).then((response) => {
+            console.log(response);
             if (response.ok) {
                 return response.text();
             } else {

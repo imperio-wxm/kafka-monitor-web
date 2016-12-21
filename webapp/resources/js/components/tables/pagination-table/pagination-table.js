@@ -80,6 +80,8 @@ export default class PaginationTable extends React.Component{
     }
 
     render() {
+        let topicNameList = this.props.topicNameList;
+        console.log(topicNameList);
         return (
           <div>
             <Table columns={columns} dataSource={data} pagination={pagination} />

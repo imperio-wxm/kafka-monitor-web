@@ -15,7 +15,7 @@ import { Tabs, Select } from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 
-import CollapseTable from '../../tables/collapse-table/collapse-table.js'
+import BrokerInfoTable from '../../tables/broker-info-table/broker-info-table.js'
 import HTTPUtil from '../../../actions/fetch/fetch.js'
 
 // 引入主体样式文件
@@ -65,10 +65,6 @@ export default class BrokerPanel extends React.Component {
         })
     }
 
-    callback = (key) =>  {
-      console.log(key);
-    }
-
     render() {
         return (
           <div className="ant-layout-wrapper">
@@ -84,7 +80,7 @@ export default class BrokerPanel extends React.Component {
                     <div></div>
                  </TabPane>
                  <TabPane tab={<span><Icon type="file-text" />Broker详细信息</span>} key="2">
-                    <CollapseTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
+                    <BrokerInfoTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
                  </TabPane>
                </Tabs>
              </div>
