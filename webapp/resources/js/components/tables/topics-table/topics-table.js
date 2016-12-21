@@ -13,8 +13,7 @@ import { Modal, Button } from 'antd';
 const DetailsButton = React.createClass({
       getInitialState() {
         return {
-          visible: false,
-          data = this.props.data
+          visible: false
         };
       },
       showModal() {
@@ -35,16 +34,15 @@ const DetailsButton = React.createClass({
         });
       },
       render() {
-        console.log(JSON.parse(this.state.data));
+        let data = JSON.parse(this.props.data);
         return (
           <div>
-            <Button type="primary" onClick={this.showModal}>Open a modal dialog</Button>
-            <Modal title="Basic Modal" visible={this.state.visible}
-              onOk={this.handleOk} onCancel={this.handleCancel}
-            >
-              <p>some contents...</p>
-              <p>some contents...</p>
-              <p>some contents...</p>
+            <Button onClick={this.showModal}>Details</Button>
+            <Modal title="详情" visible={this.state.visible} onOk={this.handleOk}
+              onCancel={this.handleCancel} okText="OK" cancelText="Cancel">
+              <p>{
+                data.topicName
+              }</p>
             </Modal>
           </div>
         );
