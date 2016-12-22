@@ -34,33 +34,46 @@ const DetailsButton = React.createClass({
         });
       },
       render() {
-        let data = JSON.parse(this.props.data);
+        let dataObj = JSON.parse(this.props.data);
+        let dataList = [];
+
+        //重新组装数据
+        for(var o in dataObj) {
+            let temp = [];
+            temp.push(o);
+            temp.push(dataObj[o]);
+            dataList.push(temp);
+        }
+
+        const columns = [{
+              title: '属性',
+              dataIndex: 'key',
+            }, {
+              title: '值',
+              dataIndex: 'value',
+            }
+        ];
+        const data = [];
+
         return (
           <div>
             <Button onClick={this.showModal}>Details</Button>
             <Modal title="详情" visible={this.state.visible} onOk={this.handleOk}
               onCancel={this.handleCancel} okText="OK" cancelText="Cancel">
-              <p>{
-                data.topicName
-              }</p>
+              {
+                dataList.map((item, index)=>{
+                    data.push({
+                      key: `${item[0]}`,
+                      value: `${item[1]}`
+                    });
+                })
+              }
+              <Table columns={columns} dataSource={data} size="middle" pagination={false}/>
             </Modal>
           </div>
         );
       },
 });
-
-function info() {
-  Modal.info({
-    title: 'This is a notification message',
-    content: (
-      <div>
-        <p>some messages...some messages...</p>
-        <p>some messages...some messages...</p>
-      </div>
-    ),
-    onOk() {},
-  });
-}
 
 function formatDate(datetime) {
     var year = datetime.getFullYear(),
@@ -75,9 +88,6 @@ function formatDate(datetime) {
 const columns = [{
   title: 'Topic Name',
   dataIndex: 'topicName',
-},{
-  title: 'Partition Number',
-  dataIndex: 'partitions',
 },{
   title: 'Create Time',
   dataIndex: 'createdTimestamp',
@@ -134,7 +144,6 @@ export default class TopicsTable extends React.Component{
 
             data.push({
               topicName: `${temp.topicName}`,
-              partitions: `${partitionList.join("")}`,
               createdTimestamp: `${createTime}`,
               modifyTimestamp: `${modifyTime}`,
               detailes : `${item}`
