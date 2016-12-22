@@ -80,7 +80,42 @@ export default class GroupTopicTable extends React.Component{
         }
     }
 
-    getPartitionList = (groupName,topicName) => {
+    getPartitionList = (groupName,topicList) => {
+
+          let urls = [];
+
+          for(let i in topicList) {
+              urls.push(
+                "http://localhost:8080/monitor/partitionList.do?topicName=" + topicList[i] + "&amp;groupName=" + groupName
+              );
+          }
+
+          console.log(urls);
+
+          // HTTPUtil.URLs(urls).then((text) => {
+          //    //处理 请求success
+          //    if(text.size != 0 ){
+          //        //我们假设业务定义code为0时，数据正常
+          //        let topicObj = JSON.parse(text[0]);
+          //        let topicList = [];
+          //
+          //        for(var o in topicObj) {
+          //           topicList.push(topicObj[o]);
+          //        }
+          //
+          //        this.setState({
+          //           topicList : topicList
+          //        })
+          //
+          //        this.getPartitionList(this.state.groupName, topicList);
+          //    }else{
+          //         //处理自定义异常
+          //        console.log("fetch exception " + text.code);
+          //    }
+          // },(text)=>{
+          //     //TODO 处理请求fail
+          //     console.log("fetch fail " + text.code);
+          // })
 
     }
 
