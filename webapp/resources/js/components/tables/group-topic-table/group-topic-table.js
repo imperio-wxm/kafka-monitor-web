@@ -75,12 +75,17 @@ export default class GroupTopicTable extends React.Component{
         super(props)
         this.state = {
             groupName : this.props.groupName,
-            topicObj :'',
+            topicList :[],
+
         }
     }
 
+    getPartitionList = (groupName,topicName) => {
+
+    }
+
     componentDidMount() {
-        var urls = [
+        let urls = [
           "http://localhost:8080/monitor/groupTopicsView.do?groupName=" + this.state.groupName
         ];
 
@@ -90,11 +95,18 @@ export default class GroupTopicTable extends React.Component{
            //处理 请求success
            if(text.size != 0 ){
                //我们假设业务定义code为0时，数据正常
-               var topicObj = JSON.parse(text[0]);
+               let topicObj = JSON.parse(text[0]);
+               let topicList = [];
+
+               for(var o in topicObj) {
+                  topicList.push(topicObj[o]);
+               }
 
                this.setState({
-                  topicObj : topicObj
+                  topicList : topicList
                })
+
+               this.getPartitionList(this.state.groupName, topicList);
            }else{
                 //处理自定义异常
                console.log("fetch exception " + text.code);
@@ -106,19 +118,33 @@ export default class GroupTopicTable extends React.Component{
     }
 
     render() {
-        console.log(this.state.topicObj);
+        let topicList = this.state.topicList;
+        console.log(topicList);
         return (
           <div>
-            <Collapse defaultActiveKey={['1']} onChange={this.callback}>
-               <Panel header="topic 1" key="1">
-                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
-               </Panel>
-               <Panel header="topic 2" key="2">
-                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
-               </Panel>
-               <Panel header="topic 3" key="3">
-                 <Table columns={columns} dataSource={data} size="small" pagination={false}/>
-               </Panel>
+            <Collapse defaultActiveKey={['0']} onChange={this.callback}>
+            {
+                topicList.map((item, index)=>{
+                    const columns = [];
+                    const data = [];
+
+                    // let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));
+                    // let modifyTime = formatDate(new Date(parseInt(item.modifyTimestamp,10)));
+                    //
+                    // data.push({
+                    //   brokerName: `${item.brokerName}`,
+                    //   version: `${item.version}`,
+                    //   jmx_port: `${item.jmx_port}`,
+                    //   createdTimestamp: `${createTime}`,
+                    //   modifyTimestamp: `${modifyTime}`,
+                    //   controller: `${item.controller}`
+                    // });
+
+                    return  <Panel header={item} key={index}>
+                                <Table columns={columns} dataSource={data} size="middle" pagination={false}/>
+                            </Panel>
+                })
+            }
             </Collapse>
           </div>
         );

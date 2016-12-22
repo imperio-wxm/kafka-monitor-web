@@ -115,9 +115,9 @@ export default class GroupPanel extends React.Component{
                        });
 
                        return  <TabPane tab={<span><Icon type="folder" />{item.groupName}</span>} key={index}>
-                                  <div style={{ background: '#fff', padding: '30px' }}>
+                                  <div style={{ background: '#fff', padding: '0px 0px 30px 0px ' }}>
                                     <Card title="详情" bordered >
-                                      <Table columns={groupInfocolumns} dataSource={groupInfoData} pagination={false} bordered={false} size="small" style={{padding: '5px' }}/>
+                                      <Table columns={groupInfocolumns} dataSource={groupInfoData} pagination={false} bordered={false} size="small" style={{padding: '0px' }}/>
                                     </Card>
                                   </div>
 
