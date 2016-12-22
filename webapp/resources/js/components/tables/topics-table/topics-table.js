@@ -33,19 +33,57 @@ const DetailsButton = React.createClass({
           visible: false,
         });
       },
+      formatPartitions(partitions) {
+           const partitionDetailsColumns = [{
+                 title: 'Partition Id',
+                 dataIndex: 'partitionId',
+               }, {
+                 title: 'Replicas BrokerId',
+                 dataIndex: 'replicasBrokerId',
+               }
+           ];
+           const partitionDetails = [];
+
+           for(var p in partitions) {
+               partitionDetails.push({
+                 partitionId: `${p}`,
+                 replicasBrokerId: `${partitions[p]}`
+               });
+           }
+           return <Table columns={partitionDetailsColumns} dataSource={partitionDetails} size="middle" pagination={false} />
+       },
       render() {
         let dataObj = JSON.parse(this.props.data);
         let dataList = [];
+        let keyName =  new Array("Topic Name","Version","Create Time","Modify Time","Partitions","Delete");
+        let topicName = dataObj.topicName;
+        var partitionInfoTable = this.formatPartitions(dataObj.partitions);
 
         //重新组装数据
+        let index = 0;
         for(var o in dataObj) {
             let temp = [];
-            temp.push(o);
-            temp.push(dataObj[o]);
+
+            if (index === 0 || index === 4) {
+              index++;
+              continue;
+            } else if (index === 2) {
+              temp.push(keyName[index]);
+              temp.push(formatDate(new Date(parseInt(dataObj[o],10))));
+            } else if (index === 3) {
+              temp.push(keyName[index]);
+              temp.push(formatDate(new Date(parseInt(dataObj[o],10))));
+            } else {
+              temp.push(keyName[index]);
+              temp.push(dataObj[o]);
+            }
+            index++;
             dataList.push(temp);
         }
 
-        const columns = [{
+        console.log(dataList);
+
+        const topicInfoColumns = [{
               title: '属性',
               dataIndex: 'key',
             }, {
@@ -53,22 +91,35 @@ const DetailsButton = React.createClass({
               dataIndex: 'value',
             }
         ];
-        const data = [];
+        const topicInfo = [];
+
+        const partitionInfoColumns = [{
+              title: 'Partition Id',
+              dataIndex: 'partitionId',
+            }, {
+              title: 'Replicas BrokerId',
+              dataIndex: 'replicasBrokerId',
+            }
+        ];
+        const partitionInfo = [];
 
         return (
           <div>
             <Button onClick={this.showModal}>Details</Button>
-            <Modal title="详情" visible={this.state.visible} onOk={this.handleOk}
-              onCancel={this.handleCancel} okText="OK" cancelText="Cancel">
+            <Modal title={topicName + " 详情"} visible={this.state.visible} onOk={this.handleOk}
+              onCancel={this.handleCancel} okText="OK" >
               {
                 dataList.map((item, index)=>{
-                    data.push({
+                  if (index != 0 || index != 4) {
+                    topicInfo.push({
                       key: `${item[0]}`,
                       value: `${item[1]}`
                     });
+                  }
                 })
               }
-              <Table columns={columns} dataSource={data} size="middle" pagination={false}/>
+              <Table columns={topicInfoColumns} dataSource={topicInfo} size="middle" pagination={false} />
+              {partitionInfoTable}
             </Modal>
           </div>
         );
@@ -88,6 +139,9 @@ function formatDate(datetime) {
 const columns = [{
   title: 'Topic Name',
   dataIndex: 'topicName',
+},{
+  title: 'Partition Count',
+  dataIndex: 'partitionCount',
 },{
   title: 'Create Time',
   dataIndex: 'createdTimestamp',
@@ -128,22 +182,17 @@ export default class TopicsTable extends React.Component{
 
         topicInfo.map((item, index)=>{
             let temp = JSON.parse(item);
-            console.log(temp);
 
             let createTime = formatDate(new Date(parseInt(temp.createdTimestamp,10)));
             let modifyTime = formatDate(new Date(parseInt(temp.modifyTimestamp,10)));
-            let partitionList = [];
-
-            partitionList.push("[");
-            for(var o in temp.partitions) {
-                partitionList.push(o);
-                partitionList.push(", ");
+            var partitionCount = 0;
+            for(var partition in temp.partitions){
+              partitionCount++;
             }
-            partitionList.pop();
-            partitionList.push("]");
 
             data.push({
               topicName: `${temp.topicName}`,
+              partitionCount : `${partitionCount}`,
               createdTimestamp: `${createTime}`,
               modifyTimestamp: `${modifyTime}`,
               detailes : `${item}`
