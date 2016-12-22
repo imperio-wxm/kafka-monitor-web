@@ -15,11 +15,21 @@ import { Tabs, Select } from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 
+import HTTPUtil from '../../../actions/fetch/fetch.js'
 import GroupTopicTable from '../../tables/group-topic-table/group-topic-table.js'
 
 // 引入主体样式文件
 import './style/style.css'
 
+function formatDate(datetime) {
+    var year = datetime.getFullYear(),
+    month = (datetime.getMonth() + 1 < 10) ? '0' + (datetime.getMonth() + 1):datetime.getMonth() + 1,
+    day = datetime.getDate() < 10 ? '0' +  datetime.getDate() : datetime.getDate(),
+    hour = datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours(),
+    min = datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes(),
+    sec = datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds();
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
+}
 
 export default class GroupPanel extends React.Component{
     //初始化
@@ -28,106 +38,93 @@ export default class GroupPanel extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            tabPosition: 'top',
+            groupNum: 0,
+            groupInfo: []
         }
     }
 
-    // 获取数据
-    fetchFn = () => {
+    componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/brokerDetailsView.do",
-          "http://localhost:8080/monitor/topicListView.do",
           "http://localhost:8080/monitor/groupDetailView.do"
         ];
 
-        // fetch('http://localhost:8080/monitor/brokerDetailsView.do')
-        //     .then((res) => {
-        //       return res.json()
-        //     })
-        //     .then((data) => {
-        //       var data = data;
-        //       this.setState({
-        //         brokerNum : data.length
-        //       })
-        //     })
-        //     .catch((e) => {
-        //       console.log(e.message)
-        //     })
+        HTTPUtil.URLs(urls).then((text) => {
+           //处理 请求success
+           if(text.size != 0 ){
+               //我们假设业务定义code为0时，数据正常
+               var groupsObj = JSON.parse(text[0]);
+               var groupDetails = [];
 
-        var allConsumersNum = 0;
+               for(var o in groupsObj){
+                   groupDetails.push(groupsObj[o]);
+               }
 
-        Promise.all(urls.map(url =>
-            fetch(url).then(resp => resp.text())
-        )).then(respList => {
-            var brokersObj = JSON.parse(respList[0]);
-            var topicsObj = JSON.parse(respList[1]);
-            var groupObj = JSON.parse(respList[2]);
-            var allConsumersNum = 0;
-
-            for(var o in groupObj){
-                allConsumersNum += parseInt(groupObj[o].consumersNum);
-                console.log(groupObj[o].groupName + " : " + groupObj[o].consumersNum)
-            }
-
-            this.setState({
-               brokersNum : brokersObj.length,
-               topicsNum : topicsObj.length,
-               groupsNum : groupObj.length,
-               consumersNum : allConsumersNum
-            })
-          })
-          .catch((e) => {
-            console.log(e.message)
-          })
-    }
-
-    componentDidMount() {
-        //this.fetchFn()
-    }
-    //  <Table
-    //    columns={columns}
-    //    expandedRowRender={record => <InsideTable />}
-    //    dataSource={data}
-    //    className="table"
-    //  />
-
-    callback = (key) =>  {
-      console.log(key);
-    }
-
-    changeTabPosition = (tabPosition) => {
-      this.setState({ tabPosition });
+               this.setState({
+                  groupNum : groupsObj.length,
+                  groupInfo : groupDetails
+               })
+           }else{
+                //处理自定义异常
+               console.log("fetch exception " + text.code);
+           }
+        },(text)=>{
+            //TODO 处理请求fail
+            console.log("fetch fail " + text.code);
+        })
     }
 
     render() {
+        let groupInfo = this.state.groupInfo;
+
         return (
           <div className="ant-layout-wrapper">
              <div className="ant-layout-breadcrumb">
                <Breadcrumb separator=">">
                   <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="">Brokers</Breadcrumb.Item>
+                  <Breadcrumb.Item href="">Group</Breadcrumb.Item>
               </Breadcrumb>
              </div>
              <div className="ant-layout-container">
-               <Tabs tabPosition={"left"}>
-                 <TabPane tab={<span><Icon type="folder" />Group_1</span>} key="1">
-                    <GroupTopicTable />
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="folder-open" />Group_2</span>} key="2">
-                    <GroupTopicTable />
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="folder" />Group_3</span>} key="3">
-                    <GroupTopicTable />
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="folder-open" />Group_4</span>} key="4">
-                    <GroupTopicTable />
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="folder" />Group_5</span>} key="5">
-                    <GroupTopicTable />
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="folder-open" />Group_6</span>} key="6">
-                    <GroupTopicTable />
-                 </TabPane>
+               <Tabs tabPosition={"left"}  defaultActiveKey="0">
+               {
+                   groupInfo.map((item, index)=>{
+                       const groupInfocolumns = [{
+                         title: 'Consumers Number',
+                         dataIndex: 'consumersNum',
+                       },{
+                         title: 'Topics Number',
+                         dataIndex: 'topicsNum',
+                       },{
+                         title: 'Create Time',
+                         dataIndex: 'createdTimestamp',
+                       }, {
+                         title: 'Modify Time',
+                         dataIndex: 'modifyTimestamp',
+                       }];
+
+                       const groupInfoData = [];
+
+                       let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));
+                       let modifyTime = formatDate(new Date(parseInt(item.modifyTimestamp,10)));
+
+                       groupInfoData.push({
+                         consumersNum: `${item.consumersNum}`,
+                         topicsNum: `${item.topicsNum}`,
+                         createdTimestamp: `${createTime}`,
+                         modifyTimestamp: `${modifyTime}`
+                       });
+
+                       return  <TabPane tab={<span><Icon type="folder" />{item.groupName}</span>} key={index}>
+                                  <div style={{ background: '#fff', padding: '30px' }}>
+                                    <Card title="详情" bordered >
+                                      <Table columns={groupInfocolumns} dataSource={groupInfoData} pagination={false} bordered={false} size="small" style={{padding: '5px' }}/>
+                                    </Card>
+                                  </div>
+
+                                  <GroupTopicTable groupName={item.groupName}/>
+                               </TabPane>
+                   })
+               }
                </Tabs>
              </div>
         </div>
