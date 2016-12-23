@@ -1,68 +1,24 @@
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-<style type="text/css">
-#body{
-	height: 500px;
-	width: 500px;
-}
-/*d3js*/
-.node circle {
-	cursor: pointer;
-	fill: #fff;
-	stroke: steelblue;
-	stroke-width: 2px;
-}
+import React from 'react'
+import { render } from 'react-dom'
 
-.node text {
-	font-size: 14px;
-	cursor: pointer;
-}
+var d3Util = {};
 
-path.link {
-	fill: none;
-	stroke: #ccc;
-	stroke-width: 2px;
-}
+import './style/d3-nodes.css'
 
-</style>
-
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-
-<div id="footer">
-	<button onclick="updateinfo()">Click me</button>
-</div>
-<div id="body" class="body">
-</div>
-
-<script type="text/javascript">
-
-
-
-updateinfo();
-
-function updateinfo(){
-	document.getElementById('body').innerHTML = "";
-	var json = {
-		"r":{
-			"name":"flare",
-			"children":[{"name":"Easing"},{"name":"Parallel6"},{"name":"Pause"}]
-			}
-		};
-	var d3js = function(json){
-			var objRight = json['r'] ? json['r'] : {};
-			var objLeft  = {};
-			d3jsTree('#body',objRight,objLeft);
-		}
-	d3js(json);
+d3Util.getClusterNode = function(dataJsonStr) {
+      function d3js(dataJsonStr) {
+  			var objRight = dataJsonStr['r'] ? dataJsonStr['r'] : {};
+  			var objLeft  = {};
+  			d3jsTree('#d3-nodes',objRight,objLeft);
+  		}
+    	d3js(dataJsonStr);
+    return <p id="d3-nodes"></p>;
 }
 
 // d3js tree
 function d3jsTree(aim,objRight,objLeft){
     // $(aim+' svg').remove();
-    var m = [0, 120, 0, 120],
+    var m = [50, 120, 0, 120],
         w = 1400 - m[1] - m[3],
         h = 500 - m[0] - m[2],  //靠左
         i = 0;
@@ -75,7 +31,7 @@ function d3jsTree(aim,objRight,objLeft){
                 .attr("width", 1200)
                 .attr("height", h + m[0] + m[2])
                 .append("svg:g")
-                .attr("transform", "translate(" + 100 + "," + m[0] + ")"); // translate(靠左，靠上)
+                .attr("transform", "translate(" + 300 + "," + m[0] + ")"); // translate(靠左，靠上)
 
     update(objRight,objLeft);
 
@@ -101,7 +57,7 @@ function d3jsTree(aim,objRight,objLeft){
 
         // Normalize for fixed-depth.
         nodes.forEach(function(d) {
-            tmp = 1;
+            var tmp = 1;
             if( d.pos == 'l' ){ tmp = -1;}
             d.y = tmp * d.depth * 200;  // 线条长度，也是作于方向
             // d.x = d.l * 63;
@@ -201,6 +157,5 @@ function d3jsTree(aim,objRight,objLeft){
         }
     }
 }
-</script>
-</body>
-</html>
+
+export default d3Util;

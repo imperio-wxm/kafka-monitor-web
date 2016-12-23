@@ -17,10 +17,19 @@ const Option = Select.Option;
 
 import BrokerInfoTable from '../../tables/broker-info-table/broker-info-table.js'
 import HTTPUtil from '../../../actions/fetch/fetch.js'
+import d3Util from '../../../actions/d3-script/d3-chart.js'
 
 // 引入主体样式文件
 import './style/style.css'
 
+
+//添加或者修改json数据
+function setJson(jsonStr,name,value) {
+    if(!jsonStr)jsonStr="{}";
+    var jsonObj = JSON.parse(jsonStr);
+    jsonObj[name] = value;
+        return JSON.stringify(jsonObj);
+}
 
 export default class BrokerPanel extends React.Component {
     //初始化
@@ -65,6 +74,23 @@ export default class BrokerPanel extends React.Component {
     }
 
     render() {
+        let brokerInfoList = this.state.brokerInfo;
+        let childrenList = [];
+        for(let o in brokerInfoList) {
+           childrenList.push({"name":brokerInfoList[o].host + " : " + brokerInfoList[o].port});
+        }
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        
+
+        let nodeJsonStr = {"r":{"name":"Brokers","children":childrenList}};
+
         return (
           <div className="ant-layout-wrapper">
              <div className="ant-layout-breadcrumb">
@@ -76,7 +102,9 @@ export default class BrokerPanel extends React.Component {
              <div className="ant-layout-container">
                <Tabs tabPosition={"left"}>
                  <TabPane tab={<span><Icon type="line-chart" />Broker集群图形</span>} key="1">
-                    <div></div>
+                   {
+                      d3Util.getClusterNode(nodeJsonStr)
+                   }
                  </TabPane>
                  <TabPane tab={<span><Icon type="file-text" />Broker详细信息</span>} key="2">
                     <BrokerInfoTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
