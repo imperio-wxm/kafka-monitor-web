@@ -72,7 +72,7 @@ class MainMenu extends React.Component {
               </div>
 
               <div className="ant-layout-content">
-                <div id="children-panel">
+                <div className="children-panel">
                   { this.props.children }
                 </div>
               </div>
