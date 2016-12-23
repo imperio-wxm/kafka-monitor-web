@@ -11,61 +11,22 @@ const Panel = Collapse.Panel;
 import HTTPUtil from '../../../actions/fetch/fetch.js'
 
 
-function getNowFormatDate() {
-    var date = new Date();
-    var seperator1 = "-";
-    var seperator2 = ":";
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    var currentdate = year + seperator1 + month + seperator1 + strDate
-            + " " + date.getHours() + seperator2 + date.getMinutes()
-            + seperator2 + date.getSeconds();
-    return currentdate;
+function formatDate(datetime) {
+    var year = datetime.getFullYear(),
+    month = (datetime.getMonth() + 1 < 10) ? '0' + (datetime.getMonth() + 1):datetime.getMonth() + 1,
+    day = datetime.getDate() < 10 ? '0' +  datetime.getDate() : datetime.getDate(),
+    hour = datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours(),
+    min = datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes(),
+    sec = datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds();
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
 
-const columns = [{
-      title: 'Partition',
-      dataIndex: 'partition',
-    }, {
-      title: 'Offset',
-      dataIndex: 'offset',
-    }, {
-      title: 'LogSize',
-      dataIndex: 'logSize',
-    }, {
-      title: 'Lag',
-      dataIndex: 'lag',
-    }, {
-      title: 'Qwner',
-      dataIndex: 'owner',
-    }, {
-      title: 'Created Time',
-      dataIndex: 'createdTimestamp',
-    }, {
-      title: 'Modify Time',
-      dataIndex: 'modifyTimestamp',
-    }
-];
-
-const data = [];
-for (let i = 0; i < 3; i++) {
-  data.push({
-    key: i,
-    partition: `${i}`,
-    offset: `${i * 100}`,
-    logSize: 12356,
-    lag: 120,
-    owner : `owner ${i}`,
-    createdTimestamp : `${getNowFormatDate()}`,
-    modifyTimestamp : `${getNowFormatDate()}`
-  });
+//添加或者修改json数据
+function setJson(jsonStr,name,value) {
+    if(!jsonStr)jsonStr="{}";
+    var jsonObj = JSON.parse(jsonStr);
+    jsonObj[name] = value;
+        return JSON.stringify(jsonObj);
 }
 
 export default class GroupTopicTable extends React.Component{
@@ -75,48 +36,8 @@ export default class GroupTopicTable extends React.Component{
         super(props)
         this.state = {
             groupName : this.props.groupName,
-            topicList :[],
-
+            topicList : []
         }
-    }
-
-    getPartitionList = (groupName,topicList) => {
-
-          let urls = [];
-
-          for(let i in topicList) {
-              urls.push(
-                "http://localhost:8080/monitor/partitionList.do?topicName=" + topicList[i] + "&amp;groupName=" + groupName
-              );
-          }
-
-          console.log(urls);
-
-          // HTTPUtil.URLs(urls).then((text) => {
-          //    //处理 请求success
-          //    if(text.size != 0 ){
-          //        //我们假设业务定义code为0时，数据正常
-          //        let topicObj = JSON.parse(text[0]);
-          //        let topicList = [];
-          //
-          //        for(var o in topicObj) {
-          //           topicList.push(topicObj[o]);
-          //        }
-          //
-          //        this.setState({
-          //           topicList : topicList
-          //        })
-          //
-          //        this.getPartitionList(this.state.groupName, topicList);
-          //    }else{
-          //         //处理自定义异常
-          //        console.log("fetch exception " + text.code);
-          //    }
-          // },(text)=>{
-          //     //TODO 处理请求fail
-          //     console.log("fetch fail " + text.code);
-          // })
-
     }
 
     componentDidMount() {
@@ -136,11 +57,6 @@ export default class GroupTopicTable extends React.Component{
                for(var o in topicObj) {
                   topicList.push(topicObj[o]);
                }
-
-               this.setState({
-                  topicList : topicList
-               })
-
                this.getPartitionList(this.state.groupName, topicList);
            }else{
                 //处理自定义异常
@@ -152,31 +68,124 @@ export default class GroupTopicTable extends React.Component{
         })
     }
 
+    getOffsetInfo = (groupName,topicPartitionsList) => {
+        let topicOffsetList = [];
+
+        for(let i in topicPartitionsList) {
+            let urls = [];
+            let topicPartitions = JSON.parse(topicPartitionsList[i]);
+            let topic = topicPartitions.topicName;
+            let partitionIdList = topicPartitions.partitions;
+            for(let partitionId in partitionIdList) {
+              urls.push(
+                "http://localhost:8080/monitor/offsetDetailView.do?groupName=" + groupName +
+                      "&topicName=" + topic + "&partitionId=" + partitionId
+              );
+            }
+
+            HTTPUtil.URLs(urls).then((text) => {
+               //处理 请求success
+               if(text.size != 0 ){
+                 let topicOffset = setJson(null,"groupName",groupName);
+                 topicOffset = setJson(topicOffset,"topicName",topic);
+                 topicOffset = setJson(topicOffset,"offsetInfo",eval('[' + text.join(",") + ']'));
+                 topicOffsetList.push(topicOffset);
+                 this.setState({
+                    topicList: topicOffsetList
+                 })
+               }else{
+                    //处理自定义异常
+                   console.log("fetch exception " + text.code);
+               }
+            },(text)=>{
+                //TODO 处理请求fail
+                console.log("fetch fail " + text.code);
+            })
+        }
+    }
+
+    getPartitionList = (groupName,topicList) => {
+          let urls = [];
+          for(let i in topicList) {
+              urls.push(
+                "http://localhost:8080/monitor/topicDetailView.do?topicName=" + topicList[i]
+              );
+          }
+
+          HTTPUtil.URLs(urls).then((text) => {
+             //处理 请求success
+             if(text.size != 0 ){
+                 let topicInfoList = text;
+                 let topicPartitionsList = [];
+
+                 for(let i in topicInfoList) {
+                   let topicInfo = JSON.parse(topicInfoList[i]);
+                   var myjsonStr = setJson(null,"topicName",topicInfo.topicName);
+                   myjsonStr = setJson(myjsonStr,"partitions",topicInfo.partitions);
+                   topicPartitionsList.push(myjsonStr);
+                 }
+                 this.getOffsetInfo(groupName, topicPartitionsList);
+             }else{
+                  //处理自定义异常
+                 console.log("fetch exception " + text.code);
+             }
+          },(text)=>{
+              //TODO 处理请求fail
+              console.log("fetch fail " + text.code);
+          })
+    }
+
     render() {
         let topicList = this.state.topicList;
-        console.log(topicList);
         return (
           <div>
             <Collapse defaultActiveKey={['0']} onChange={this.callback}>
             {
                 topicList.map((item, index)=>{
-                    const columns = [];
-                    const data = [];
+                    item = JSON.parse(item);
+                    const offsetInfoColumns = [{
+                          title: 'Partition Id',
+                          dataIndex: 'partitionId',
+                        }, {
+                          title: 'Offset',
+                          dataIndex: 'offset',
+                        }, {
+                          title: 'LogSize',
+                          dataIndex: 'logSize',
+                        }, {
+                          title: 'Lag',
+                          dataIndex: 'lag',
+                        }, {
+                          title: 'Qwner',
+                          dataIndex: 'owner',
+                        }, {
+                          title: 'Created Time',
+                          dataIndex: 'createdTimestamp',
+                        }, {
+                          title: 'Modify Time',
+                          dataIndex: 'modifyTimestamp',
+                        }
+                    ];
 
-                    // let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));
-                    // let modifyTime = formatDate(new Date(parseInt(item.modifyTimestamp,10)));
-                    //
-                    // data.push({
-                    //   brokerName: `${item.brokerName}`,
-                    //   version: `${item.version}`,
-                    //   jmx_port: `${item.jmx_port}`,
-                    //   createdTimestamp: `${createTime}`,
-                    //   modifyTimestamp: `${modifyTime}`,
-                    //   controller: `${item.controller}`
-                    // });
+                    const offsetInfoData = [];
 
-                    return  <Panel header={item} key={index}>
-                                <Table columns={columns} dataSource={data} size="middle" pagination={false}/>
+                    return  <Panel header={item.topicName} key={index}>
+                                {
+                                  item.offsetInfo.map((item, index)=>{
+                                      let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));
+                                      let modifyTime = formatDate(new Date(parseInt(item.modifyTimestamp,10)));
+                                      offsetInfoData.push({
+                                        partitionId: `${item.partitionId}`,
+                                        offset: `${item.offset}`,
+                                        logSize: `${item.logSize}`,
+                                        lag: `${item.lag}`,
+                                        owner: `${item.owner}`,
+                                        createdTimestamp: `${createTime}`,
+                                        modifyTimestamp: `${modifyTime}`
+                                      });
+                                  })
+                                }
+                                <Table columns={offsetInfoColumns} dataSource={offsetInfoData} size="middle" pagination={false}/>
                             </Panel>
                 })
             }
