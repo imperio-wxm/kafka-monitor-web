@@ -6,12 +6,12 @@ var d3Util = {};
 import './style/d3-nodes.css'
 
 d3Util.getClusterNode = function(dataJsonStr) {
-      function d3js(dataJsonStr) {
-  			var objRight = dataJsonStr['r'] ? dataJsonStr['r'] : {};
-  			var objLeft  = {};
-  			d3jsTree('#d3-nodes',objRight,objLeft);
-  		}
-    	d3js(dataJsonStr);
+    function d3js(dataJsonStr) {
+			var objRight = dataJsonStr['r'] ? dataJsonStr['r'] : {};
+			var objLeft  = {};
+			d3jsTree('#d3-nodes',objRight,objLeft);
+		}
+  	d3js(dataJsonStr);
     return <p id="d3-nodes"></p>;
 }
 
@@ -76,7 +76,15 @@ function d3jsTree(aim,objRight,objLeft){
 
         nodeEnter.append("svg:circle")
             .attr("r", 1e-6)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            .style("fill", function(d) {
+              return d._children ? "lightsteelblue" : "#fff";
+            })
+            .style("stroke", function(d) {
+              //更新leader节点的颜色
+              if (d.isController == true) {
+                return "red";
+              }
+            });
 
         nodeEnter.append("svg:text")
             .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -92,7 +100,9 @@ function d3jsTree(aim,objRight,objLeft){
 
         nodeUpdate.select("circle")
             .attr("r", 4.5)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            .style("fill", function(d) {
+              return d._children ? "lightsteelblue" : "#fff";
+            });
 
         nodeUpdate.select("text").style("fill-opacity", 1);
 

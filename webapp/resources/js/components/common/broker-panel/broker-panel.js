@@ -77,7 +77,7 @@ export default class BrokerPanel extends React.Component {
         let brokerInfoList = this.state.brokerInfo;
         let childrenList = [];
         for(let o in brokerInfoList) {
-           childrenList.push({"name":brokerInfoList[o].host + " : " + brokerInfoList[o].port});
+           childrenList.push({"name":brokerInfoList[o].host + " : " + brokerInfoList[o].port,"isController":brokerInfoList[o].controller});
         }
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
@@ -87,7 +87,7 @@ export default class BrokerPanel extends React.Component {
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
-        
+
 
         let nodeJsonStr = {"r":{"name":"Brokers","children":childrenList}};
 
