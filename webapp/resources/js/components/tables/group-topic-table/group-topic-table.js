@@ -6,9 +6,13 @@ import React from 'react'
 import { Link } from 'react-router';
 import { Table } from 'antd';
 import { Collapse } from 'antd';
+import { Tabs, Select } from 'antd';
 const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 import HTTPUtil from '../../../actions/fetch/fetch.js'
+import RealTimeChart from '../../../actions/highcharts-script/real-time-charts.js'
+import './style/style.css'
 
 
 function formatDate(datetime) {
@@ -185,7 +189,17 @@ export default class GroupTopicTable extends React.Component{
                                       });
                                   })
                                 }
+
                                 <Table columns={offsetInfoColumns} dataSource={offsetInfoData} size="middle" pagination={false}/>
+
+                                <div className="charts-tabs">
+                                  <Tabs type="card">
+                                    <TabPane tab="实时" key="1">
+                                        <RealTimeChart />
+                                    </TabPane>
+                                    <TabPane tab="历史" key="2">Content of Tab Pane 2</TabPane>
+                                  </Tabs>
+                                </div>
                             </Panel>
                 })
             }

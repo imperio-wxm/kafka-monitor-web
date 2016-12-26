@@ -37,7 +37,8 @@
     "antd": "^2.1.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-router": "^2.4.1"
+    "react-router": "^2.4.1",
+    "react-highcharts" : "^11.0.0"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --host localhost --port 9090 --config webpack.config.js",

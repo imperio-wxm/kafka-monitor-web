@@ -62,7 +62,12 @@ module.exports = {
         new webpack.NoErrorsPlugin(),
         //这个使用uglifyJs压缩你的js代码
         //new webpack.optimize.UglifyJsPlugin({minimize: true}),
-        new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')
+        new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
+        new webpack.ProvidePlugin({
+           $: "jquery",
+           jQuery: "jquery",
+           "window.jQuery": "jquery"
+        })
     ]
 }
 
