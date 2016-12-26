@@ -195,7 +195,7 @@ export default class GroupTopicTable extends React.Component{
                                 <div className="charts-tabs">
                                   <Tabs type="card">
                                     <TabPane tab="实时" key="1">
-                                        <RealTimeChart />
+                                        <RealTimeChart topicName={item.topicName}/>
                                     </TabPane>
                                     <TabPane tab="历史" key="2">Content of Tab Pane 2</TabPane>
                                   </Tabs>
