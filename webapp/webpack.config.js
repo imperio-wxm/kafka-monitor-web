@@ -17,7 +17,7 @@ module.exports = {
         publicPath: 'http://127.0.0.1:9090/dist/',
         filename: '[name].js'
     },
-	resolve: {
+	  resolve: {
         alias: {
           'react': path.join(__dirname, 'node_modules', 'react')
         },
