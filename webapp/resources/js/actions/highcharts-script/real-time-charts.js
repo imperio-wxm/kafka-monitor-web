@@ -27,17 +27,24 @@ class Charts extends React.Component {
                load: function () {
                    // set up the updating of the chart each second
                    var series = this.series[0];
-                   var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer');
+                   var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do');
+                   ws.onopen = function (evt) {
+                     console.log("Connected !");
+                   };
+                   var y = 0;
                    setInterval(function () {
-                     var y = 0;
-                     ws.onmessage = function(e) {
-                      // 接收到了一个消息
-                       y = e.data;
-                       alert(e.data);
-                     };
                      var x = (new Date()).getTime(); // current time
+                     ws.onmessage = function (evt) {
+                       console.log("Received message: " + evt.data);
+                       y = parseInt(evt.data);
+                     };
+                     ws.onerror = function (evt) {
+                       console.log('<span style="color: red;">ERROR:</span> '
+                         + evt.data);
+                       ws.close();
+                     };
                       //      y = Math.random();
-                      series.addPoint([x, y], true, true);
+                     series.addPoint([x, y], true, true);
                    }, 2000);
                }
            }
