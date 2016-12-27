@@ -14,6 +14,7 @@ class Charts extends React.Component {
   }
   render() {
     let topicName = this.props.topicName;
+    let groupName = this.props.groupName;
 
     const config = {
       global: {
@@ -26,25 +27,38 @@ class Charts extends React.Component {
            events: {
                load: function () {
                    // set up the updating of the chart each second
-                   var series = this.series[0];
-                   var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do');
+                   var offsetSeries = this.series[0];
+                   var logSizeSeries = this.series[1];
+                   var lagSeries = this.series[2];
+                   var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do?groupName='+ groupName + '&topicName=' + topicName);
                    ws.onopen = function (evt) {
                      console.log("Connected !");
                    };
-                   var y = 0;
                    setInterval(function () {
                      var x = (new Date()).getTime(); // current time
                      ws.onmessage = function (evt) {
-                       console.log("Received message: " + evt.data);
-                       y = parseInt(evt.data);
+                         if (evt.data != null) {
+                           var dataJson = JSON.parse(evt.data);
+                           console.log(dataJson);
+                           var allOffset = 0;
+                           var allLagSize = 0;
+                           var allLag = 0;
+
+                           for(var o in dataJson) {
+                              allOffset += parseFloat(dataJson[o].offsetInfos.offset);
+                              allLagSize += parseFloat(dataJson[o].offsetInfos.logSize);
+                              allLag += parseFloat(dataJson[o].offsetInfos.lag);
+                           }
+                           offsetSeries.addPoint([x, allOffset], true, true);
+                           logSizeSeries.addPoint([x, allLagSize], true, true);
+                           lagSeries.addPoint([x, allLag], true, true);
+                         }
                      };
                      ws.onerror = function (evt) {
                        console.log('<span style="color: red;">ERROR:</span> '
                          + evt.data);
                        ws.close();
                      };
-                      //      y = Math.random();
-                     series.addPoint([x, y], true, true);
                    }, 2000);
                }
            }
@@ -67,20 +81,47 @@ class Charts extends React.Component {
            }]
        },
        tooltip: {
-           formatter: function () {
-               return '<b>' + this.series.name + '</b><br/>' +
-                   Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                   Highcharts.numberFormat(this.y, 2);
-           }
+           shared: true,
+           crosshairs: true
        },
        legend: {
-           enabled: false
+             borderWidth: 0
        },
        exporting: {
            enabled: false
        },
        series: [{
-           name: 'Random data',
+           name: 'Offset',
+           data: (function () {
+               // generate an array of random data
+               var data = [],
+                   time = (new Date()).getTime(),
+                   i;
+               for (i = -19; i <= 0; i += 1) {
+                   data.push({
+                       x: time + i * 1000,
+                       y: Math.random()
+                   });
+               }
+               return data;
+           }())
+       },{
+           name: 'Log Size',
+           data: (function () {
+               // generate an array of random data
+               var data = [],
+                   time = (new Date()).getTime(),
+                   i;
+               for (i = -19; i <= 0; i += 1) {
+                   data.push({
+                       x: time + i * 1000,
+                       y: Math.random()
+                   });
+               }
+               return data;
+           }())
+       },{
+           name: 'Lag',
            data: (function () {
                // generate an array of random data
                var data = [],
