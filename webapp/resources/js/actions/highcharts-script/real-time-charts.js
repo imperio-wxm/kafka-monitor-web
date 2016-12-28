@@ -12,6 +12,7 @@ class Charts extends React.Component {
       }
   }
 
+
   closeWebSocketConn = () => {
        this.state.ws.close();
        console.log("Closed!");
@@ -27,6 +28,11 @@ class Charts extends React.Component {
         console.log("Connected !");
       };
       return ws;
+  }
+
+  componentWillUnmount() {
+     this.state.ws.close();
+     console.log("componentWillUnmount!");
   }
 
   componentDidMount() {
@@ -63,6 +69,7 @@ class Charts extends React.Component {
                              if (evt.data != null) {
                                var dataJson = JSON.parse(evt.data);
                                var x = (new Date()).getTime(); // current time
+                               console.log(dataJson);
                                var allOffset = 0;
                                var allLagSize = 0;
                                var allLag = 0;
