@@ -12,17 +12,13 @@ class Charts extends React.Component {
       }
   }
 
-  componentWillMount() {
-    this.getWebSocketConn();
-  }
-
   closeWebSocketConn = () => {
        this.state.ws.close();
        console.log("Closed!");
   }
 
-  componentWillUpdate() {
-      console.log("componentWillUpdate");
+  componentWillReceiveProps() {
+     console.log("componentWillReceiveProps!");
   }
 
   getWebSocketConn = () => {
@@ -31,11 +27,6 @@ class Charts extends React.Component {
         console.log("Connected !");
       };
       return ws;
-  }
-
-  componentWillUnmount() {
-     this.state.ws.close();
-     console.log("componentWillUnmount!");
   }
 
   componentDidMount() {
@@ -72,7 +63,6 @@ class Charts extends React.Component {
                              if (evt.data != null) {
                                var dataJson = JSON.parse(evt.data);
                                var x = (new Date()).getTime(); // current time
-                               console.log(dataJson);
                                var allOffset = 0;
                                var allLagSize = 0;
                                var allLag = 0;
@@ -83,6 +73,7 @@ class Charts extends React.Component {
                                   allLag += parseFloat(dataJson[o].offsetInfos.lag);
                                }
 
+                               //解决固定点推进问题，当堆积点超过10个，在向前推进
                                if (index < 10) {
                                    offsetSeries.addPoint([x, allOffset], true, false);
                                    logSizeSeries.addPoint([x, allLagSize], true, false);

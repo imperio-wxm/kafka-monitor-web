@@ -39,17 +39,22 @@ export default class GroupTopicTable extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            groupName : this.props.groupName,
+            groupName : props.groupName,
             topicList : []
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+       this.setState({
+         groupName: nextProps.groupName
+       });
+       console.log(nextProps.groupName);
     }
 
     componentDidMount() {
         let urls = [
           "http://localhost:8080/monitor/groupTopicsView.do?groupName=" + this.state.groupName
         ];
-
-        console.log(urls);
 
         HTTPUtil.URLs(urls).then((text) => {
            //处理 请求success
