@@ -61,6 +61,7 @@ export default class GroupTopicTable extends React.Component{
                for(var o in topicObj) {
                   topicList.push(topicObj[o]);
                }
+               topicList.sort();
                this.getPartitionList(this.state.groupName, topicList);
            }else{
                 //处理自定义异常
@@ -94,6 +95,7 @@ export default class GroupTopicTable extends React.Component{
                  topicOffset = setJson(topicOffset,"topicName",topic);
                  topicOffset = setJson(topicOffset,"offsetInfo",eval('[' + text.join(",") + ']'));
                  topicOffsetList.push(topicOffset);
+                 topicOffsetList.sort();
                  this.setState({
                     topicList: topicOffsetList
                  })
@@ -137,6 +139,12 @@ export default class GroupTopicTable extends React.Component{
               //TODO 处理请求fail
               console.log("fetch fail " + text.code);
           })
+    }
+
+    tabChange = (e) => {
+      this.refs.realTimeChart.closeWebSocketConn();
+      this.refs.realTimeChart.getWebSocketConn();
+      console.log(e);
     }
 
     render() {
@@ -193,9 +201,9 @@ export default class GroupTopicTable extends React.Component{
                                 <Table columns={offsetInfoColumns} dataSource={offsetInfoData} size="middle" pagination={false}/>
 
                                 <div className="charts-tabs">
-                                  <Tabs type="card">
+                                  <Tabs type="card" onChange={this.tabChange}>
                                     <TabPane tab="实时" key="1">
-                                        <RealTimeChart topicName={item.topicName} groupName={this.state.groupName}/>
+                                        <RealTimeChart topicName={item.topicName} groupName={this.state.groupName} ref="realTimeChart"/>
                                     </TabPane>
                                     <TabPane tab="历史" key="2">Content of Tab Pane 2</TabPane>
                                   </Tabs>

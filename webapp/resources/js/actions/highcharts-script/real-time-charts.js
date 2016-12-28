@@ -9,8 +9,11 @@ class Charts extends React.Component {
       super(props)
       this.state = {
           config: {},
-          ws: null
       }
+  }
+
+  componentWillMount() {
+    this.getWebSocketConn();
   }
 
   closeWebSocketConn = () => {
@@ -18,18 +21,33 @@ class Charts extends React.Component {
        console.log("Closed!");
   }
 
+  componentWillUpdate() {
+      console.log("componentWillUpdate");
+  }
+
+  getWebSocketConn = () => {
+      var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do?groupName='+ this.props.groupName + '&topicName=' +  this.props.topicName);
+      ws.onopen = function(evt){
+        console.log("Connected !");
+      };
+      return ws;
+  }
+
   componentWillUnmount() {
      this.state.ws.close();
+     console.log("componentWillUnmount!");
   }
 
   componentDidMount() {
     let topicName = this.props.topicName;
     let groupName = this.props.groupName;
 
-    var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do?groupName='+ groupName + '&topicName=' + topicName);
-    ws.onopen = function(evt){
-      console.log("Connected !");
-    };
+    let ws = this.getWebSocketConn();
+
+    let initIndex = 0;
+    let initOffset = [];
+    let initLogSize = [];
+    let initLag = [];
 
     const config = {
         global: {
@@ -41,16 +59,19 @@ class Charts extends React.Component {
              marginRight: 10,
              events: {
                  load: function () {
+                     var index = 0;
                      // set up the updating of the chart each second
                      var offsetSeries = this.series[0];
                      var logSizeSeries = this.series[1];
                      var lagSeries = this.series[2];
 
                      setInterval(function () {
-                         var x = (new Date()).getTime(); // current time
+
                          ws.onmessage = function (evt) {
+
                              if (evt.data != null) {
                                var dataJson = JSON.parse(evt.data);
+                               var x = (new Date()).getTime(); // current time
                                console.log(dataJson);
                                var allOffset = 0;
                                var allLagSize = 0;
@@ -61,10 +82,18 @@ class Charts extends React.Component {
                                   allLagSize += parseFloat(dataJson[o].offsetInfos.logSize);
                                   allLag += parseFloat(dataJson[o].offsetInfos.lag);
                                }
-                               offsetSeries.addPoint([x, allOffset], true, true);
-                               logSizeSeries.addPoint([x, allLagSize], true, true);
-                               lagSeries.addPoint([x, allLag], true, true);
+
+                               if (index < 10) {
+                                   offsetSeries.addPoint([x, allOffset], true, false);
+                                   logSizeSeries.addPoint([x, allLagSize], true, false);
+                                   lagSeries.addPoint([x, allLag], true, false);
+                               } else {
+                                   offsetSeries.addPoint([x, allOffset], true, true);
+                                   logSizeSeries.addPoint([x, allLagSize], true, true);
+                                   lagSeries.addPoint([x, allLag], true, true);
+                               }
                              }
+                             index++;
                           };
                           ws.onerror = function (evt) {
                              console.log('<span style="color: red;">ERROR:</span> '
@@ -105,58 +134,21 @@ class Charts extends React.Component {
          },
          series: [{
              name: 'Offset',
-             data: (function () {
-                 // generate an array of random data
-                 var data = [],
-                     time = (new Date()).getTime(),
-                     i;
-                 for (i = -10; i <= 0; i += 1) {
-                     data.push({
-                         x: time + i * 1000,
-                         y: Math.random()
-                     });
-                 }
-                 return data;
-             }())
+             data: []
          },{
              name: 'Log Size',
-             data: (function () {
-                 // generate an array of random data
-                 var data = [],
-                     time = (new Date()).getTime(),
-                     i;
-                 for (i = -10; i <= 0; i += 1) {
-                     data.push({
-                         x: time + i * 1000,
-                         y: Math.random()
-                     });
-                 }
-                 return data;
-             }())
+             data: []
          },{
              name: 'Lag',
-             data: (function () {
-                 // generate an array of random data
-                 var data = [],
-                     time = (new Date()).getTime(),
-                     i;
-                 for (i = -10; i <= 0; i += 1) {
-                     data.push({
-                         x: time + i * 1000,
-                         y: Math.random()
-                     });
-                 }
-                 return data;
-             }())
+             data: []
          }]
       };
       this.setState({
          config : config,
-         ws: ws
       })
   }
-  render() {
 
+  render() {
     return (
       <div>
         <ReactHighcharts config={this.state.config} ref="chart"> </ReactHighcharts>
