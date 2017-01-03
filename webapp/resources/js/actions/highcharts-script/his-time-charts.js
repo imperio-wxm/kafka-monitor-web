@@ -95,24 +95,33 @@ class HisTimeCharts extends React.Component {
        if(text.size != 0 ){
            //我们假设业务定义code为0时，数据正常
            var hisOffsetObj = JSON.parse(text);
-           let highStockData = [];
+           let highStockOffset = [];
+           let highStockLogSize = [];
+           let highStockLag = [];
 
            for(var o in hisOffsetObj){
-               let data = [];
+               let offsetData = [];
+               let logSizeData = [];
+               let lagData = [];
+
                var starttime = (hisOffsetObj[o].Insert_Time).replace(new RegExp("-","gm"),"/");
                var starttimeHaoMiao = (new Date(starttime)).getTime();
-               data.push(starttimeHaoMiao);
-               data.push(hisOffsetObj[o].allOffset);
-               highStockData.push(data);
+
+               offsetData.push(starttimeHaoMiao);
+               offsetData.push(hisOffsetObj[o].allOffset);
+               logSizeData.push(starttimeHaoMiao);
+               logSizeData.push(hisOffsetObj[o].allLogSize)
+               lagData.push(starttimeHaoMiao);
+               lagData.push(hisOffsetObj[o].allLag);
+
+               highStockOffset.push(offsetData);
+               highStockLogSize.push(logSizeData);
+               highStockLag.push(lagData);
            }
 
            const config = {
                rangeSelector: {
                  buttons: [{
-                      count: 1,
-                      type: 'minute',
-                      text: '1m'
-                  }, {
                       count: 5,
                       type: 'minute',
                       text: '5m'
@@ -136,14 +145,22 @@ class HisTimeCharts extends React.Component {
                   selected: 0
                },
                title: {
-                 text: 'AAPL Stock Price'
+                 text: topicName
+               },
+               tooltip: {
+                   shared: true,
+                   crosshairs: true,
+                   hideDelay:1000
                },
                series: [{
-                 name: 'AAPL',
-                 data: highStockData,
-                 tooltip: {
-                   valueDecimals: 2
-                 }
+                 name: 'Offset',
+                 data: highStockOffset,
+               },{
+                 name: 'LogSize',
+                 data: highStockLogSize,
+               },{
+                 name: 'Lag',
+                 data: highStockLag,
                }]
              };
 
