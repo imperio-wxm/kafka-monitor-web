@@ -107,7 +107,17 @@ class RealTimeCharts extends React.Component {
          },
          xAxis: {
              type: 'datetime',
-             tickPixelInterval: 150
+             tickPixelInterval: 150,
+             dateTimeLabelFormats: {
+                 millisecond: '%H:%M:%S',
+                 second: '%H:%M:%S',
+                 minute: '%H:%M',
+                 hour: '%H:%M',
+                 day: '%m-%d',
+                 week: '%m-%d',
+                 month: '%Y-%m',
+                 year: '%Y'
+             }
          },
          yAxis: {
              title: {
@@ -144,7 +154,7 @@ class RealTimeCharts extends React.Component {
 
       //取消UTC时区
       ReactHighcharts.Highcharts.setOptions({ global: { useUTC: false } });
-      
+
       this.setState({
          config : config,
       })

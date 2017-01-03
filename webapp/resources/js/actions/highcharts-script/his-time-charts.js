@@ -153,7 +153,7 @@ class HisTimeCharts extends React.Component {
                xAxis: {
                   type: 'datetime',
                   dateTimeLabelFormats: {
-                      millisecond: '%H:%M:%S.%L',
+                      millisecond: '%H:%M:%S',
                       second: '%H:%M:%S',
                       minute: '%H:%M',
                       hour: '%H:%M',
