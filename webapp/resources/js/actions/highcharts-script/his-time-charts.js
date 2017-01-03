@@ -3,6 +3,70 @@ import ReactDOM from 'react-dom';
 import ReactHighcharts  from 'react-highcharts';
 import ReactHighstock from 'react-highcharts/ReactHighstock.src';
 
+import HTTPUtil from '../fetch/fetch.js'
+
+
+function js_strto_time(str_time){
+	var new_str = str_time.replace(/:/g,"-");
+	new_str = new_str.replace(/ /g,"-");
+	var arr = new_str.split("-");
+	var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
+	return strtotime = datum.getTime()/1000;
+}
+
+function getNowDate() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    if(month > 0 && month < 10) {
+        month = '0' + month;
+    }
+    if(day > 0 && day < 10) {
+        day = '0' + day;
+    }
+    if(hour > 0 && hour < 10) {
+        hour = '0' + hour;
+    }
+    if(minute > 0 && minute < 10) {
+        minute = '0' + minute;
+    }
+    if(second > 0 && second < 10) {
+        second = '0' + second;
+    }
+    return year + '-' + month + '-' + day  + ' ' + hour + ':' + minute + ':' + second;
+}
+
+function getLastWeekDate() {
+    var now = new Date();
+    var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    if(month > 0 && month < 10) {
+        month = '0' + month;
+    }
+    if(day > 0 && day < 10) {
+        day = '0' + day;
+    }
+    if(hour > 0 && hour < 10) {
+        hour = '0' + hour;
+    }
+    if(minute > 0 && minute < 10) {
+        minute = '0' + minute;
+    }
+    if(second > 0 && second < 10) {
+        second = '0' + second;
+    }
+    return year + '-' + month + '-' + day  + ' ' + hour + ':' + minute + ':' + second;
+}
+
 class HisTimeCharts extends React.Component {
   constructor(props) {
       super(props)
@@ -12,25 +76,89 @@ class HisTimeCharts extends React.Component {
   }
 
   componentDidMount() {
-    let data = [[1220832000000, 22.56], [1220918400000, 21.67], [1221004800000, 21.66], [1221091200000, 21.81], [1221177600000, 21.28], [1221436800000, 20.05], [1221523200000, 19.98], [1221609600000, 18.26], [1221696000000, 19.16], [1221782400000, 20.13], [1222041600000, 18.72], [1222128000000, 18.12], [1222214400000, 18.39], [1222300800000, 18.85], [1222387200000, 18.32], [1222646400000, 15.04], [1222732800000, 16.24], [1222819200000, 15.59], [1222905600000, 14.3], [1222992000000, 13.87], [1223251200000, 14.02], [1223337600000, 12.74], [1223424000000, 12.83], [1223510400000, 12.68], [1223596800000, 13.8], [1223856000000, 15.75], [1223942400000, 14.87], [1224028800000, 13.99], [1224115200000, 14.56], [1224201600000, 13.91], [1224460800000, 14.06], [1224547200000, 13.07], [1224633600000, 13.84], [1224720000000, 14.03], [1224806400000, 13.77], [1225065600000, 13.16], [1225152000000, 14.27], [1225238400000, 14.94], [1225324800000, 15.86], [1225411200000, 15.37], [1225670400000, 15.28], [1225756800000, 15.86], [1225843200000, 14.76], [1225929600000, 14.16], [1226016000000, 14.03], [1226275200000, 13.7], [1226361600000, 13.54], [1226448000000, 12.87], [1226534400000, 13.78], [1226620800000, 12.89], [1226880000000, 12.59], [1226966400000, 12.84], [1227052800000, 12.33], [1227139200000, 11.5], [1227225600000, 11.8], [1227484800000, 13.28], [1227571200000, 12.97], [1227657600000, 13.57], [1227830400000, 13.24], [1228089600000, 12.7], [1228176000000, 13.21], [1228262400000, 13.7], [1228348800000, 13.06], [1228435200000, 13.43], [1228694400000, 14.25], [1228780800000, 14.29], [1228867200000, 14.03], [1228953600000, 13.57], [1229040000000, 14.04], [1229299200000, 13.54]];
-    const config = {
-        rangeSelector: {
-          selected: 1
-        },
-        title: {
-          text: 'AAPL Stock Price'
-        },
-        series: [{
-          name: 'AAPL',
-          data: data,
-          tooltip: {
-            valueDecimals: 2
-          }
-        }]
-      };
-      this.setState({
-         config : config,
-      })
+
+    console.log(getLastWeekDate());
+    console.log(getNowDate());
+
+    let groupName = this.props.groupName;
+    let topicName = this.props.topicName;
+    let startTime = this.props.startTime;
+    let endTime = this.props.endTime;
+
+    var urls = [
+      "http://localhost:8080/monitor/offsetHisByTime.do?groupName=" +
+          groupName + "&topicName=" + topicName + "&startTime=" + getLastWeekDate() + "&endTime=" + getNowDate()
+    ];
+
+    HTTPUtil.URLs(urls).then((text) => {
+       //处理 请求success
+       if(text.size != 0 ){
+           //我们假设业务定义code为0时，数据正常
+           var hisOffsetObj = JSON.parse(text);
+           let highStockData = [];
+
+           for(var o in hisOffsetObj){
+               let data = [];
+               var starttime = (hisOffsetObj[o].Insert_Time).replace(new RegExp("-","gm"),"/");
+               var starttimeHaoMiao = (new Date(starttime)).getTime();
+               data.push(starttimeHaoMiao);
+               data.push(hisOffsetObj[o].allOffset);
+               highStockData.push(data);
+           }
+
+           const config = {
+               rangeSelector: {
+                 buttons: [{
+                      count: 1,
+                      type: 'minute',
+                      text: '1m'
+                  }, {
+                      count: 5,
+                      type: 'minute',
+                      text: '5m'
+                  },  {
+                      count: 1,
+                      type: 'hour',
+                      text: '1h'
+                  },  {
+                      count: 5,
+                      type: 'hour',
+                      text: '5h'
+                  },  {
+                      count: 1,
+                      type: 'day',
+                      text: '1d'
+                  }, {
+                      type: 'all',
+                      text: 'All'
+                  }],
+                  inputEnabled: false,
+                  selected: 0
+               },
+               title: {
+                 text: 'AAPL Stock Price'
+               },
+               series: [{
+                 name: 'AAPL',
+                 data: highStockData,
+                 tooltip: {
+                   valueDecimals: 2
+                 }
+               }]
+             };
+
+             this.setState({
+                config : config,
+             })
+
+       }else{
+            //处理自定义异常
+           console.log("fetch exception " + text.code);
+       }
+    },(text)=>{
+        //TODO 处理请求fail
+        console.log("fetch fail " + text.code);
+    })
   }
 
   render() {
