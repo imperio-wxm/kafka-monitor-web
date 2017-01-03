@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactHighcharts  from 'react-highcharts';
 import ReactHighstock from 'react-highcharts/ReactHighstock.src';
+import Highcharts  from 'highcharts';
 
 import HTTPUtil from '../fetch/fetch.js'
 
@@ -95,6 +96,7 @@ class HisTimeCharts extends React.Component {
        if(text.size != 0 ){
            //我们假设业务定义code为0时，数据正常
            var hisOffsetObj = JSON.parse(text);
+
            let highStockOffset = [];
            let highStockLogSize = [];
            let highStockLag = [];
@@ -120,6 +122,7 @@ class HisTimeCharts extends React.Component {
            }
 
            const config = {
+               global: { useUTC: false } ,
                rangeSelector: {
                  buttons: [{
                       count: 5,
@@ -147,10 +150,27 @@ class HisTimeCharts extends React.Component {
                title: {
                  text: topicName
                },
+               xAxis: {
+                  type: 'datetime',
+                  dateTimeLabelFormats: {
+                      millisecond: '%H:%M:%S.%L',
+                      second: '%H:%M:%S',
+                      minute: '%H:%M',
+                      hour: '%H:%M',
+                      day: '%m-%d',
+                      week: '%m-%d',
+                      month: '%Y-%m',
+                      year: '%Y'
+                  }
+              },
                tooltip: {
                    shared: true,
                    crosshairs: true,
                    hideDelay:1000
+               },
+               legend: {
+                    enabled: true,
+                    borderWidth: 0
                },
                series: [{
                  name: 'Offset',
@@ -167,6 +187,9 @@ class HisTimeCharts extends React.Component {
              this.setState({
                 config : config,
              })
+
+             //取消UTC时区
+             ReactHighcharts.Highcharts.setOptions({ global: { useUTC: false } });
 
        }else{
             //处理自定义异常

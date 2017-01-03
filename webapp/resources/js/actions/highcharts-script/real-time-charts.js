@@ -141,6 +141,10 @@ class RealTimeCharts extends React.Component {
              data: []
          }]
       };
+
+      //取消UTC时区
+      ReactHighcharts.Highcharts.setOptions({ global: { useUTC: false } });
+      
       this.setState({
          config : config,
       })
