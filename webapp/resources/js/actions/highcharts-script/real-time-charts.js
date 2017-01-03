@@ -4,7 +4,7 @@ import ReactHighcharts  from 'react-highcharts';
 import Highcharts  from 'highcharts';
 
 
-class Charts extends React.Component {
+class RealTimeCharts extends React.Component {
   constructor(props) {
       super(props)
       this.state = {
@@ -149,10 +149,10 @@ class Charts extends React.Component {
   render() {
     return (
       <div>
-        <ReactHighcharts config={this.state.config} ref="chart"> </ReactHighcharts>
+        <ReactHighcharts config={this.state.config} ref="realChart"> </ReactHighcharts>
       </div>
     );
   }
 }
 
-export default Charts;
+export default RealTimeCharts;

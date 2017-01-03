@@ -85,7 +85,7 @@ export default class GroupPanel extends React.Component{
               </Breadcrumb>
              </div>
              <div className="ant-layout-container">
-               <Tabs tabPosition={"left"}  defaultActiveKey="0">
+               <Tabs tabPosition={"top"}  defaultActiveKey="0">
                {
                    groupInfo.map((item, index)=>{
                        const groupInfocolumns = [{
@@ -115,13 +115,13 @@ export default class GroupPanel extends React.Component{
                        });
 
                        return  <TabPane tab={<span><Icon type="folder" />{item.groupName}</span>} key={index} >
-                                  <div style={{ background: '#fff', padding: '0px 0px 30px 0px ' }}>
-                                    <Card title="详情" bordered >
-                                      <Table columns={groupInfocolumns} dataSource={groupInfoData} pagination={false} bordered={false} size="small" style={{padding: '0px' }}/>
-                                    </Card>
-                                  </div>
+                                   <div style={{ background: '#fff', padding: '0px 0px 30px 0px ' }}>
+                                     <Card title="详情" bordered >
+                                       <Table columns={groupInfocolumns} dataSource={groupInfoData} pagination={false} bordered={false} size="small" style={{padding: '0px' }}/>
+                                     </Card>
+                                   </div>
 
-                                  <GroupTopicTable groupName={item.groupName}/>
+                                   <GroupTopicTable groupName={item.groupName}/>
                                </TabPane>
                    })
                }

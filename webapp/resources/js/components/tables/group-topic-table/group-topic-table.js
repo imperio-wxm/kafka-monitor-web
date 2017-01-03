@@ -11,7 +11,8 @@ const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
 import HTTPUtil from '../../../actions/fetch/fetch.js'
-import RealTimeChart from '../../../actions/highcharts-script/real-time-charts.js'
+import RealTimeCharts from '../../../actions/highcharts-script/real-time-charts.js'
+import HisTimeCharts from '../../../actions/highcharts-script/his-time-charts.js'
 import './style/style.css'
 
 
@@ -146,12 +147,6 @@ export default class GroupTopicTable extends React.Component{
           })
     }
 
-    tabChange = (e) => {
-      this.refs.realTimeChart.closeWebSocketConn();
-      this.refs.realTimeChart.getWebSocketConn();
-      console.log(e);
-    }
-
     render() {
         let topicList = this.state.topicList;
         return (
@@ -206,11 +201,13 @@ export default class GroupTopicTable extends React.Component{
                                 <Table columns={offsetInfoColumns} dataSource={offsetInfoData} size="middle" pagination={false}/>
 
                                 <div className="charts-tabs">
-                                  <Tabs type="card" onChange={this.tabChange}>
+                                  <Tabs type="card">
                                     <TabPane tab="实时" key="1">
-                                        <RealTimeChart topicName={item.topicName} groupName={this.state.groupName} ref="realTimeChart"/>
+                                        <RealTimeCharts topicName={item.topicName} groupName={this.state.groupName} ref="realTimeChart"/>
                                     </TabPane>
-                                    <TabPane tab="历史" key="2">Content of Tab Pane 2</TabPane>
+                                    <TabPane tab="历史" key="2">
+                                        <HisTimeCharts topicName={item.topicName} groupName={this.state.groupName} ref="hisTimeCharts"/>
+                                    </TabPane>
                                   </Tabs>
                                 </div>
                             </Panel>
