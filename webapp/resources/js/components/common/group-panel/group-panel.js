@@ -85,7 +85,7 @@ export default class GroupPanel extends React.Component{
               </Breadcrumb>
              </div>
              <div className="ant-layout-container">
-               <Tabs tabPosition={"top"}  defaultActiveKey="0">
+               <Tabs tabPosition={"left"}  defaultActiveKey="0">
                {
                    groupInfo.map((item, index)=>{
                        const groupInfocolumns = [{

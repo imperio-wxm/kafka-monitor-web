@@ -151,7 +151,7 @@ export default class GroupTopicTable extends React.Component{
         let topicList = this.state.topicList;
         return (
           <div>
-            <Collapse defaultActiveKey={['0']} onChange={this.callback}>
+            <Collapse defaultActiveKey={['0']} onChange={this.callback} accordion>
             {
                 topicList.map((item, index)=>{
                     item = JSON.parse(item);
