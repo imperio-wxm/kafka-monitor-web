@@ -42,7 +42,7 @@ export default class TopicPanel extends React.Component{
 
         for(let i = 0; i < topicsObj.length;i++) {
             urls.push(
-              "http://localhost:8080/monitor/topicDetailView.do?topicName=" + topicsObj[i]
+              "http://localhost:8088/monitor/topicDetailView.do?topicName=" + topicsObj[i]
             );
         }
 
@@ -65,7 +65,7 @@ export default class TopicPanel extends React.Component{
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/topicListView.do"
+          "http://localhost:8088/monitor/topicListView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {

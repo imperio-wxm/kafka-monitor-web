@@ -12,27 +12,16 @@ class RealTimeCharts extends React.Component {
       }
   }
 
-
-  closeWebSocketConn = () => {
-       this.state.ws.close();
-       console.log("Closed!");
-  }
-
   componentWillReceiveProps() {
      console.log("componentWillReceiveProps!");
   }
 
   getWebSocketConn = () => {
-      var ws = new WebSocket('ws://localhost:8080/monitor/webSocketServer.do?groupName='+ this.props.groupName + '&topicName=' +  this.props.topicName);
+      var ws = new WebSocket('ws://localhost:8088/monitor/webSocketServer.do?groupName='+ this.props.groupName + '&topicName=' +  this.props.topicName);
       ws.onopen = function(evt){
         console.log("Connected !");
       };
       return ws;
-  }
-
-  componentWillUnmount() {
-     this.state.ws.close();
-     console.log("componentWillUnmount!");
   }
 
   componentDidMount() {

@@ -54,7 +54,7 @@ export default class GroupTopicTable extends React.Component{
 
     componentDidMount() {
         let urls = [
-          "http://localhost:8080/monitor/groupTopicsView.do?groupName=" + this.state.groupName
+          "http://localhost:8088/monitor/groupTopicsView.do?groupName=" + this.state.groupName
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
@@ -89,7 +89,7 @@ export default class GroupTopicTable extends React.Component{
             let partitionIdList = topicPartitions.partitions;
             for(let partitionId in partitionIdList) {
               urls.push(
-                "http://localhost:8080/monitor/offsetDetailView.do?groupName=" + groupName +
+                "http://localhost:8088/monitor/offsetDetailView.do?groupName=" + groupName +
                       "&topicName=" + topic + "&partitionId=" + partitionId
               );
             }
@@ -120,7 +120,7 @@ export default class GroupTopicTable extends React.Component{
           let urls = [];
           for(let i in topicList) {
               urls.push(
-                "http://localhost:8080/monitor/topicDetailView.do?topicName=" + topicList[i]
+                "http://localhost:8088/monitor/topicDetailView.do?topicName=" + topicList[i]
               );
           }
 
@@ -151,7 +151,7 @@ export default class GroupTopicTable extends React.Component{
         let topicList = this.state.topicList;
         return (
           <div>
-            <Collapse defaultActiveKey={['0']} onChange={this.callback} accordion>
+            <Collapse defaultActiveKey={['0']} accordion>
             {
                 topicList.map((item, index)=>{
                     item = JSON.parse(item);

@@ -23,9 +23,9 @@ export default class MainPanel extends React.Component{
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/brokerDetailsView.do",
-          "http://localhost:8080/monitor/topicListView.do",
-          "http://localhost:8080/monitor/groupDetailView.do"
+          "http://localhost:8088/monitor/brokerDetailsView.do",
+          "http://localhost:8088/monitor/topicListView.do",
+          "http://localhost:8088/monitor/groupDetailView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {

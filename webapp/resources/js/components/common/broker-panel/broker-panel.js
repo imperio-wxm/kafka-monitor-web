@@ -45,7 +45,7 @@ export default class BrokerPanel extends React.Component {
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/brokerDetailsView.do"
+          "http://localhost:8088/monitor/brokerDetailsView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {

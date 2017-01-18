@@ -45,7 +45,7 @@ export default class GroupPanel extends React.Component{
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8080/monitor/groupDetailView.do"
+          "http://localhost:8088/monitor/groupDetailView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
@@ -94,24 +94,13 @@ export default class GroupPanel extends React.Component{
                        },{
                          title: 'Topics Number',
                          dataIndex: 'topicsNum',
-                       },{
-                         title: 'Create Time',
-                         dataIndex: 'createdTimestamp',
-                       }, {
-                         title: 'Modify Time',
-                         dataIndex: 'modifyTimestamp',
                        }];
 
                        const groupInfoData = [];
 
-                       let createTime = formatDate(new Date(parseInt(item.createdTimestamp,10)));
-                       let modifyTime = formatDate(new Date(parseInt(item.modifyTimestamp,10)));
-
                        groupInfoData.push({
                          consumersNum: `${item.consumersNum}`,
-                         topicsNum: `${item.topicsNum}`,
-                         createdTimestamp: `${createTime}`,
-                         modifyTimestamp: `${modifyTime}`
+                         topicsNum: `${item.topicsNum}`
                        });
 
                        return  <TabPane tab={<span><Icon type="folder" />{item.groupName}</span>} key={index} >

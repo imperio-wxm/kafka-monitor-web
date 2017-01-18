@@ -87,7 +87,7 @@ class HisTimeCharts extends React.Component {
     let endTime = this.props.endTime;
 
     var urls = [
-      "http://localhost:8080/monitor/offsetHisByTime.do?groupName=" +
+      "http://localhost:8088/monitor/offsetHisByTime.do?groupName=" +
           groupName + "&topicName=" + topicName + "&startTime=" + getLastWeekDate() + "&endTime=" + getNowDate()
     ];
 
