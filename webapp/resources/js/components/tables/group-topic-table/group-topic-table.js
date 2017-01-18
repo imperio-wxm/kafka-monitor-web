@@ -155,6 +155,9 @@ export default class GroupTopicTable extends React.Component{
             {
                 topicList.map((item, index)=>{
                     item = JSON.parse(item);
+
+                    console.log(item.topicName);
+
                     const offsetInfoColumns = [{
                           title: 'Partition Id',
                           dataIndex: 'partitionId',

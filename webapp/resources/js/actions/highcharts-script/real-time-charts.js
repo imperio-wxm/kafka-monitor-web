@@ -92,7 +92,7 @@ class RealTimeCharts extends React.Component {
              }
          },
          title: {
-             text: topicName
+             text: this.props.topicName
          },
          xAxis: {
              type: 'datetime',
