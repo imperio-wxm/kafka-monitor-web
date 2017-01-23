@@ -13,6 +13,7 @@ const TabPane = Tabs.TabPane;
 import HTTPUtil from '../../../actions/fetch/fetch.js'
 import RealTimeCharts from '../../../actions/highcharts-script/real-time-charts.js'
 import HisTimeCharts from '../../../actions/highcharts-script/his-time-charts.js'
+import CassandraCountCharts from '../../../actions/highcharts-script/cassandra-count-charts.js'
 import './style/style.css'
 
 
@@ -34,6 +35,10 @@ function setJson(jsonStr,name,value) {
         return JSON.stringify(jsonObj);
 }
 
+function sortByField(x, y) {
+    return x.topicName - y.topicName;
+}
+
 export default class GroupTopicTable extends React.Component{
     //初始化
 
@@ -43,13 +48,6 @@ export default class GroupTopicTable extends React.Component{
             groupName : props.groupName,
             topicList : []
         }
-    }
-
-    componentWillReceiveProps(nextProps) {
-       this.setState({
-         groupName: nextProps.groupName
-       });
-       console.log(nextProps.groupName);
     }
 
     componentDidMount() {
@@ -101,10 +99,6 @@ export default class GroupTopicTable extends React.Component{
                  topicOffset = setJson(topicOffset,"topicName",topic);
                  topicOffset = setJson(topicOffset,"offsetInfo",eval('[' + text.join(",") + ']'));
                  topicOffsetList.push(topicOffset);
-                 topicOffsetList.sort();
-                 this.setState({
-                    topicList: topicOffsetList
-                 })
                }else{
                     //处理自定义异常
                    console.log("fetch exception " + text.code);
@@ -112,9 +106,14 @@ export default class GroupTopicTable extends React.Component{
             },(text)=>{
                 //TODO 处理请求fail
                 console.log("fetch fail " + text.code);
+            }).then(() => {
+              this.setState({
+                 topicList: topicOffsetList
+              })
             })
         }
     }
+
 
     getPartitionList = (groupName,topicList) => {
           let urls = [];
@@ -149,6 +148,9 @@ export default class GroupTopicTable extends React.Component{
 
     render() {
         let topicList = this.state.topicList;
+
+        topicList.sort(sortByField);
+
         return (
           <div>
             <Collapse defaultActiveKey={['0']} accordion>
@@ -156,7 +158,6 @@ export default class GroupTopicTable extends React.Component{
                 topicList.map((item, index)=>{
                     item = JSON.parse(item);
 
-                    console.log(item.topicName);
 
                     const offsetInfoColumns = [{
                           title: 'Partition Id',
@@ -210,6 +211,9 @@ export default class GroupTopicTable extends React.Component{
                                     </TabPane>
                                     <TabPane tab="历史" key="2">
                                         <HisTimeCharts topicName={item.topicName} groupName={this.state.groupName} ref="hisTimeCharts"/>
+                                    </TabPane>
+                                    <TabPane tab="Cassnadra 写入统计" key="3">
+                                        <CassandraCountCharts topicName={item.topicName} groupName={this.state.groupName} ref="cassandraCountCharts"/>
                                     </TabPane>
                                   </Tabs>
                                 </div>

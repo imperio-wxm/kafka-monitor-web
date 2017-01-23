@@ -68,7 +68,7 @@ function getLastWeekDate() {
     return year + '-' + month + '-' + day  + ' ' + hour + ':' + minute + ':' + second;
 }
 
-class HisTimeCharts extends React.Component {
+class CassandraCountCharts extends React.Component {
   constructor(props) {
       super(props)
       this.state = {
@@ -87,7 +87,7 @@ class HisTimeCharts extends React.Component {
     let endTime = this.props.endTime;
 
     var urls = [
-      "http://localhost:8088/monitor/offsetHisByTime.do?groupName=" +
+      "http://localhost:8088/monitor/countByTime.do?typeName=cassandra&groupName=" +
           groupName + "&topicName=" + topicName + "&startTime=" + getLastWeekDate() + "&endTime=" + getNowDate()
     ];
 
@@ -95,30 +95,30 @@ class HisTimeCharts extends React.Component {
        //处理 请求success
        if(text.size != 0 ){
            //我们假设业务定义code为0时，数据正常
-           var hisOffsetObj = JSON.parse(text);
+           var cassandraCountObj = JSON.parse(text);
 
-           let highStockOffset = [];
-           let highStockLogSize = [];
-           let highStockLag = [];
+           let cassandraCount = [];
+					 let cassandraCountSum = [];
 
-           for(var o in hisOffsetObj){
-               let offsetData = [];
-               let logSizeData = [];
-               let lagData = [];
+					 let count = 0;
 
-               var starttime = (hisOffsetObj[o].Insert_Time).replace(new RegExp("-","gm"),"/");
+           for(var o in cassandraCountObj){
+               let countNum = [];
+							 let countSum = [];
+
+               var starttime = (cassandraCountObj[o].Insert_Time).replace(new RegExp("-","gm"),"/");
                var starttimeHaoMiao = (new Date(starttime)).getTime();
 
-               offsetData.push(starttimeHaoMiao);
-               offsetData.push(hisOffsetObj[o].allOffset);
-               logSizeData.push(starttimeHaoMiao);
-               logSizeData.push(hisOffsetObj[o].allLogSize)
-               lagData.push(starttimeHaoMiao);
-               lagData.push(hisOffsetObj[o].allLag);
+               countNum.push(starttimeHaoMiao);
+               countNum.push(cassandraCountObj[o].Count_Num);
 
-               highStockOffset.push(offsetData);
-               highStockLogSize.push(logSizeData);
-               highStockLag.push(lagData);
+							 count += cassandraCountObj[o].Count_Num;
+
+							 countSum.push(starttimeHaoMiao);
+							 countSum.push(count);
+
+               cassandraCount.push(countNum);
+							 cassandraCountSum.push(countSum);
            }
 
            const config = {
@@ -184,14 +184,12 @@ class HisTimeCharts extends React.Component {
                     borderWidth: 0
                },
                series: [{
-                 name: 'Offset',
-                 data: highStockOffset,
+                 name: 'Cassandra Write Count',
+                 data: cassandraCount,
                },{
-                 name: 'LogSize',
-                 data: highStockLogSize,
-               },{
-                 name: 'Lag',
-                 data: highStockLag,
+                 name: 'Cassandra Write Sum',
+                 data: cassandraCountSum,
+								 visible:false
                }]
              };
 
@@ -215,10 +213,10 @@ class HisTimeCharts extends React.Component {
   render() {
     return (
       <div>
-        <ReactHighstock config={this.state.config} ref="hisChart"> </ReactHighstock>
+        <ReactHighstock config={this.state.config} ref="cassandraCountChart"> </ReactHighstock>
       </div>
     );
   }
 }
 
-export default HisTimeCharts;
+export default CassandraCountCharts;
