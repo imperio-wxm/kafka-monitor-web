@@ -171,7 +171,7 @@ class CassandraCountCharts extends React.Component {
                       week: '%m-%d',
                       month: '%Y-%m',
                       year: '%Y'
-                  }
+                  },
               },
                tooltip: {
 								 	 valueDecimals: 0,
