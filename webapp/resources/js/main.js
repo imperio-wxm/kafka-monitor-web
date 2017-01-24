@@ -53,7 +53,7 @@ class MainMenu extends React.Component {
               <div className="ant-layout-header">
                 <div className="ant-layout-wrapper">
                     <div className="ant-layout-logo"></div>
-                    <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
+                    <Menu theme="dark" onClick={this.handleClick} mode="vertical"
                         style={{lineHeight: '64px'}}>
                         <Menu.Item key="1">
                             <Link to="/"><Icon type="home" />Home</Link>
