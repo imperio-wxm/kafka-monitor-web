@@ -6,7 +6,7 @@ import React from 'react'
 import { Link } from 'react-router';
 import { Table } from 'antd';
 import { Collapse } from 'antd';
-import { Tabs, Select } from 'antd';
+import { Tabs, Select,Button  } from 'antd';
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
@@ -151,6 +151,8 @@ export default class GroupTopicTable extends React.Component{
 
         topicList.sort(sortByField);
 
+        const operations = <Button shape="circle" icon="reload"></Button>;
+
         return (
           <div>
             <Collapse defaultActiveKey={['0']} accordion>
@@ -205,7 +207,7 @@ export default class GroupTopicTable extends React.Component{
                                 <Table columns={offsetInfoColumns} dataSource={offsetInfoData} size="middle" pagination={false}/>
 
                                 <div className="charts-tabs">
-                                  <Tabs type="card">
+                                  <Tabs type="card" tabBarExtraContent={operations}>
                                     <TabPane tab="实时" key="1">
                                         <RealTimeCharts topicName={item.topicName} groupName={this.state.groupName} ref="realTimeChart"/>
                                     </TabPane>
