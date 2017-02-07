@@ -1,10 +1,3 @@
-/**
- *
- * @authors luozh@snail.com
- * @date    2016-03-21 16:42:35
- * @description 主入口模块
- */
-
 import React from 'react'
 import { render } from 'react-dom'
 
@@ -12,14 +5,13 @@ import { render } from 'react-dom'
 import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink, browserHistory } from 'react-router'
 
 // 引入Antd的导航组件
-import { Menu, Icon, Breadcrumb,Switch } from 'antd'
+import { Menu, Icon, Breadcrumb,Switch,Layout,Input} from 'antd'
 const SubMenu = Menu.SubMenu
 const MenuItemGroup = Menu.ItemGroup
+const { Header, Content, Footer, Sider } = Layout;
+const Search = Input.Search;
 
 import 'font-awesome/css/font-awesome.min.css'
-
-// 引入主体样式文件
-import './main.css'
 
 // import 自定义组件
 import MainPanel from './components/common/main-panel/main-panel.js'
@@ -27,64 +19,76 @@ import BrokerPanel from './components/common/broker-panel/broker-panel.js'
 import TopicPanel from './components/common/topic-panel/topic-panel.js'
 import GroupPanel from './components/common/group-panel/group-panel.js'
 
-const ACTIVE = { color: 'red' }
+// 引入主体样式文件
+import './index.css'
 
-// menu
-class MainMenu extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            current: ''
-        }
-    }
+class Index extends React.Component {
+  constructor(props) {
+      super(props)
+      this.state = {
+          current: ''
+      }
+  }
 
-    handleClick = (e) => {
-        this.setState({
-            current: e.key
-        })
-    }
+  render() {
+    const collapse = this.state.collapse;
+    return (
+      <div className="layout-aside">
+        <aside className="layout-sider">
+          <div className="layout-logo"></div>
 
-    componentDidMount() {
-    }
+          <div className="layout-search">
+            <Search
+              placeholder="input search text"
+              onSearch={value => console.log(value)}
+            />
 
-    render() {
-        return (
-          <div className="ant-layout-topaside">
-              <div className="ant-layout-header">
-                <div className="ant-layout-wrapper">
-                    <div className="ant-layout-logo"></div>
-                    <Menu theme="dark" onClick={this.handleClick} mode="horizontal"
-                        style={{lineHeight: '64px'}}>
-                        <Menu.Item key="1">
-                            <Link to="/"><Icon type="home" />Home</Link>
-                        </Menu.Item>
-                        <Menu.Item key="2">
-                            <Link to="/brokerPanel"><Icon type="appstore"/>Brokers</Link>
-                        </Menu.Item>
-                        <Menu.Item key="3">
-                            <Link to="/groupPanel"><Icon type="appstore"/>Groups</Link>
-                        </Menu.Item>
-                        <Menu.Item key="4">
-                            <Link to="/topicPanel"><Icon type="appstore"/>Topics</Link>
-                        </Menu.Item>
-                    </Menu>
-                </div>
-              </div>
-
-              <div className="ant-layout-content">
-                <div className="children-panel">
-                  { this.props.children }
-                </div>
-              </div>
           </div>
-        )
-    }
-}
+          <Menu mode="inline" theme="dark"
+            defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']}>
+            <Menu.Item key="home">
+              <Link to="/">
+               <Icon type="home" />
+               <span className="nav-text">首页</span>
+              </Link>
+            </Menu.Item>
+             <Menu.Item key="brokers">
+               <Link to="/brokerPanel">
+                  <Icon type="appstore" />
+                  <span className="nav-text">Brokers</span>
+               </Link>
+            </Menu.Item>
+            <Menu.Item key="topics">
+               <Link to="/topicPanel">
+                 <Icon type="switcher" />
+                 <span className="nav-text">Topics</span>
+               </Link>
+           </Menu.Item>
+          </Menu>
+        </aside>
+        <div className="layout-main">
+          <div className="layout-header"></div>
+          <div className="layout-container">
+
+            <div className="layout-content">
+              <div style={{ height: 580 }}>
+                { this.props.children }
+              </div>
+            </div>
+          </div>
+          <div className="layout-footer">
+          
+          </div>
+        </div>
+      </div>
+    );
+  }
+};
 
 // 配置路由
 render((
     <Router history={hashHistory} >
-        <Route path="/" component={MainMenu}>
+        <Route path="/" component={Index}>
           <IndexRoute component={MainPanel} />
           <Route path="brokerPanel" component={BrokerPanel} />
           <Route path="topicPanel" component={TopicPanel} />
