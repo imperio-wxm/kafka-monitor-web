@@ -4,11 +4,10 @@
 import React from 'react'
 
 import { Link } from 'react-router';
-import { Table } from 'antd';
-import { Collapse } from 'antd';
+import { Modal, Button,Icon,Collapse,Table,Tabs,Select } from 'antd';
+const Option = Select.Option;
 const Panel = Collapse.Panel;
-import { Modal, Button } from 'antd';
-
+const TabPane = Tabs.TabPane;
 
 const DetailsButton = React.createClass({
       getInitialState() {
@@ -126,6 +125,78 @@ const DetailsButton = React.createClass({
       },
 });
 
+const MonitorButton = React.createClass({
+      getInitialState() {
+        return {
+          visible: false
+        };
+      },
+      showModal() {
+        this.setState({
+          visible: true,
+        });
+      },
+      handleOk() {
+        console.log('Clicked OK');
+        this.setState({
+          visible: false,
+        });
+      },
+      handleCancel(e) {
+        console.log(e);
+        this.setState({
+          visible: false,
+        });
+      },
+
+      render() {
+        return (
+          <div>
+            <Button onClick={this.showModal} size="small">Details</Button>
+            <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk}>
+              <Tabs defaultActiveKey="1" type="card">
+                <TabPane tab="Tab 1" key="1">
+                  <Tabs tabPosition="left">
+                    <TabPane tab="Tab 1" key="1">Content of Tab 1</TabPane>
+                    <TabPane tab="Tab 2" key="2">Content of Tab 2</TabPane>
+                    <TabPane tab="Tab 3" key="3">Content of Tab 3</TabPane>
+                  </Tabs>
+                </TabPane>
+                <TabPane tab="Tab 2" key="2">Content of tab 2</TabPane>
+                <TabPane tab="Tab 3" key="3">Content of tab 3</TabPane>
+                <TabPane tab="Tab 4" key="4">Content of tab 4</TabPane>
+              </Tabs>
+            </Modal>
+          </div>
+        );
+      },
+});
+
+const GroupSelect = React.createClass({
+      getInitialState() {
+        return {
+          visible: false
+        };
+      },
+
+      handleChange(value) {
+        console.log(`selected ${value}`);
+      },
+
+      render() {
+        return (
+          <div>
+             <Select defaultValue="lucy" style={{ width: 200 }} onChange={this.handleChange}>
+               <Option value="jack"><MonitorButton /></Option>
+               <Option value="lucy">Lucy</Option>
+               <Option value="disabled" disabled>Disabled</Option>
+               <Option value="yiminghe">Yiminghe</Option>
+             </Select>
+          </div>
+        );
+      },
+});
+
 function formatDate(datetime) {
     var year = datetime.getFullYear(),
     month = (datetime.getMonth() + 1 < 10) ? '0' + (datetime.getMonth() + 1):datetime.getMonth() + 1,
@@ -149,9 +220,17 @@ const columns = [{
   title: 'Modify Time',
   dataIndex: 'modifyTimestamp',
 }, {
+  title: 'Is Active',
+  dataIndex: 'isActive',
+  render: (text) => <Icon type="check"  data={text}/>,
+}, {
   title: 'Detailes',
   dataIndex: 'detailes',
   render: (text) => <DetailsButton data={text} />,
+}, {
+  title: 'Monitor Details',
+  dataIndex: 'monitorDetails',
+  render: (text) => <GroupSelect data={text} />,
 }];
 
 const data = [];
@@ -195,7 +274,9 @@ export default class TopicsTable extends React.Component{
               partitionCount : `${partitionCount}`,
               createdTimestamp: `${createTime}`,
               modifyTimestamp: `${modifyTime}`,
-              detailes : `${item}`
+              isActive : `${item}`,
+              detailes : `${item}`,
+              monitorDetails : `${item}`
             });
         })
 

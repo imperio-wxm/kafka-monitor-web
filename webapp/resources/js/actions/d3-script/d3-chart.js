@@ -21,7 +21,7 @@ function d3jsTree(aim,objRight,objLeft){
     // $(aim+' svg').remove();
     var m = [50, 120, 0, 120],
         w = 1000 - m[1] - m[3],
-        h = 300 - m[0] - m[2],  //靠左
+        h = 450 - m[0] - m[2],  //靠左
         i = 0;
 
     var tree = d3.layout.cluster().size([h, w]);
@@ -36,7 +36,7 @@ function d3jsTree(aim,objRight,objLeft){
                 .attr("width", 1000)
                 .attr("height", h + m[0] + m[2])
                 .append("svg:g")
-                .attr("transform", "translate(" + 350 + "," + 10 + ")"); // translate(靠左，靠上)
+                .attr("transform", "translate(" + 350 + "," + 15 + ")"); // translate(靠左，靠上)
 
     update(objRight,objLeft);
 

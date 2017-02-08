@@ -88,12 +88,6 @@ export default class TopicPanel extends React.Component{
     render() {
         return (
           <div className="ant-layout-wrapper">
-             <div className="ant-layout-breadcrumb">
-               <Breadcrumb separator=">">
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="">Topics</Breadcrumb.Item>
-              </Breadcrumb>
-             </div>
              <div className="ant-layout-container">
                 <div className="pagination-table">
                   <TopicsTable topicNameList={this.state.topicNameList} topicInfo={this.state.topicInfo}/>

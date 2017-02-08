@@ -98,8 +98,8 @@ export default class BrokerPanel extends React.Component {
         let nodeJsonStr = {"r":{"name":"Brokers","children":childrenList}};
 
         return (
-          <div className="ant-layout-wrapper">
-             <div className="ant-layout-container">
+          <div className="broker-panel-layout-wrapper">
+             <div className="broker-panel-layout-container">
                 <Collapse defaultActiveKey={['1']}>
                   <Panel header={<span><Icon type="line-chart" />Broker集群图形</span>} key="1" >
                     <div ref="brokers">
