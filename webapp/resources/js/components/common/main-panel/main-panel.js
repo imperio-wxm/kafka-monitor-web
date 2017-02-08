@@ -8,6 +8,7 @@ import { Card, Col, Row } from 'antd';
 // 引入主体样式文件
 import './style/style.css'
 import HTTPUtil from '../../../actions/fetch/fetch.js'
+import URLUtil from '../../../actions/utils/urls.js'
 
 export default class MainPanel extends React.Component{
     //初始化
@@ -23,13 +24,13 @@ export default class MainPanel extends React.Component{
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8088/monitor/brokerDetailsView.do",
-          "http://localhost:8088/monitor/topicListView.do",
-          "http://localhost:8088/monitor/groupDetailView.do"
+          URLUtil.getUrlHead() + "/monitor/brokerDetailsView.do",
+          URLUtil.getUrlHead() + "/monitor/topicListView.do",
+          URLUtil.getUrlHead() + "/monitor/groupDetailView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
-          console.log(text[0]);
+          //console.log(text[0]);
            //处理 请求success
            if(text.size != 0 ){
                //我们假设业务定义code为0时，数据正常
@@ -61,7 +62,7 @@ export default class MainPanel extends React.Component{
 
     render() {
         return (
-          <div className="ant-layout-container">
+          <div className="main-panel-layout-container">
             <div className= "main-panel" style={{ background: '#ECECEC', padding: '10px' }}>
                 <Row>
                   <Col span="6">
