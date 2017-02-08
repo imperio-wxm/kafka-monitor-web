@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { render,findDOMNode } from 'react-dom'
 
 // 引入React-Router模块
 import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink, browserHistory } from 'react-router'
@@ -30,14 +30,18 @@ class Index extends React.Component {
       }
   }
 
+  componentDidMount() {
+  }
+
   render() {
     const collapse = this.state.collapse;
-    return (
-      <div className="layout-aside">
-        <aside className="layout-sider">
-          <div className="layout-logo"></div>
 
-          <div className="layout-search">
+    return (
+      <div className="main-layout-aside">
+        <aside className="main-layout-sider">
+          <div className="main-layout-logo"></div>
+
+          <div className="main-layout-search">
             <Search
               placeholder="input search text"
               onSearch={value => console.log(value)}
@@ -66,18 +70,16 @@ class Index extends React.Component {
            </Menu.Item>
           </Menu>
         </aside>
-        <div className="layout-main">
-          <div className="layout-header"></div>
-          <div className="layout-container">
+        <div className="main-layout-main">
+          <div className="main-layout-header"></div>
+          <div className="main-layout-container">
 
-            <div className="layout-content">
-              <div style={{ height: 580 }}>
+            <div className="main-layout-content">
                 { this.props.children }
-              </div>
             </div>
           </div>
-          <div className="layout-footer">
-          
+          <div className="main-layout-footer">
+
           </div>
         </div>
       </div>

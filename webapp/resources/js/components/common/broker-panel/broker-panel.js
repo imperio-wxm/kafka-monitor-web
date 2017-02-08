@@ -2,26 +2,23 @@
  * Created by weiximing.imperio on 2016/12/14.
  */
 import React from 'react'
-import { render } from 'react-dom'
+import { render,findDOMNode } from 'react-dom'
 
 // 引入React-Router模块
 import { Router, Route, Link, hashHistory, IndexRoute, Redirect, IndexLink, browserHistory } from 'react-router'
-import { Card, Col, Row } from 'antd';
-import { Table } from 'antd';
-import { Menu, Breadcrumb, Icon } from 'antd';
+import { Card, Col, Row, Select, Tabs,Collapse,Menu,Breadcrumb,Icon } from 'antd';
 const SubMenu = Menu.SubMenu;
-
-import { Tabs, Select } from 'antd';
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
+const Panel = Collapse.Panel;
 
 import BrokerInfoTable from '../../tables/broker-info-table/broker-info-table.js'
 import HTTPUtil from '../../../actions/fetch/fetch.js'
 import d3Util from '../../../actions/d3-script/d3-chart.js'
+import URLUtil from '../../../actions/utils/urls.js'
 
 // 引入主体样式文件
 import './style/style.css'
-
 
 //添加或者修改json数据
 function setJson(jsonStr,name,value) {
@@ -45,7 +42,7 @@ export default class BrokerPanel extends React.Component {
 
     componentDidMount() {
         var urls = [
-          "http://localhost:8088/monitor/brokerDetailsView.do"
+          URLUtil.getUrlHead() + "/monitor/brokerDetailsView.do"
         ];
 
         HTTPUtil.URLs(urls).then((text) => {
@@ -87,29 +84,32 @@ export default class BrokerPanel extends React.Component {
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
         childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
-
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
+        childrenList.push({"name":"192.168.152.23" + " : " + "1025"});
 
         let nodeJsonStr = {"r":{"name":"Brokers","children":childrenList}};
 
         return (
           <div className="ant-layout-wrapper">
-             <div className="ant-layout-breadcrumb">
-               <Breadcrumb separator=">">
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item href="">Brokers</Breadcrumb.Item>
-              </Breadcrumb>
-             </div>
              <div className="ant-layout-container">
-               <Tabs tabPosition={"left"}>
-                 <TabPane tab={<span><Icon type="line-chart" />Broker集群图形</span>} key="1">
-                   {
-                      d3Util.getClusterNode(nodeJsonStr)
-                   }
-                 </TabPane>
-                 <TabPane tab={<span><Icon type="file-text" />Broker详细信息</span>} key="2">
-                    <BrokerInfoTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
-                 </TabPane>
-               </Tabs>
+                <Collapse defaultActiveKey={['1']}>
+                  <Panel header={<span><Icon type="line-chart" />Broker集群图形</span>} key="1" >
+                    <div ref="brokers">
+                      {
+                         d3Util.getClusterNode(nodeJsonStr)
+                      }
+                    </div>
+                  </Panel>
+                </Collapse>
+                <BrokerInfoTable brokerNum={this.state.brokersNum} brokerInfo={this.state.brokerInfo}/>
              </div>
         </div>
         );

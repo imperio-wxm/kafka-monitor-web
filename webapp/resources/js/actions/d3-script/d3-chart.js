@@ -1,5 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 
 var d3Util = {};
 
@@ -12,26 +13,30 @@ d3Util.getClusterNode = function(dataJsonStr) {
 			d3jsTree('#d3-nodes',objRight,objLeft);
 		}
   	d3js(dataJsonStr);
-    return <p id="d3-nodes"></p>;
+    return <div id="d3-nodes"></div>;
 }
 
 // d3js tree
 function d3jsTree(aim,objRight,objLeft){
     // $(aim+' svg').remove();
     var m = [50, 120, 0, 120],
-        w = 1400 - m[1] - m[3],
-        h = 500 - m[0] - m[2],  //靠左
+        w = 1000 - m[1] - m[3],
+        h = 300 - m[0] - m[2],  //靠左
         i = 0;
 
     var tree = d3.layout.cluster().size([h, w]);
 
     var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
+    //每次先清空svg，避免react重复渲染
+    var deleteNode = d3.select(aim);
+    deleteNode.selectAll("*").remove();
+
     var vis = d3.select(aim).append("svg:svg")
-                .attr("width", 1200)
+                .attr("width", 1000)
                 .attr("height", h + m[0] + m[2])
                 .append("svg:g")
-                .attr("transform", "translate(" + 300 + "," + m[0] + ")"); // translate(靠左，靠上)
+                .attr("transform", "translate(" + 350 + "," + 10 + ")"); // translate(靠左，靠上)
 
     update(objRight,objLeft);
 
