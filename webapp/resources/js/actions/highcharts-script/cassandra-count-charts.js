@@ -123,6 +123,7 @@ class CassandraCountCharts extends React.Component {
 
            const config = {
                global: { useUTC: false } ,
+							 chart: {height:500},
                rangeSelector: {
                  buttons: [{
                       count: 5,

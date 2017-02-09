@@ -11,11 +11,13 @@ const TabPane = Tabs.TabPane;
 
 import RealTimeCharts from '../../../actions/highcharts-script/real-time-charts.js'
 import HisTimeCharts from '../../../actions/highcharts-script/his-time-charts.js'
+import CassandraCountCharts from '../../../actions/highcharts-script/cassandra-count-charts.js'
 
 const DetailsButton = React.createClass({
       getInitialState() {
         return {
-          visible: false
+          visible: false,
+          newRandomKey: Math.random()
         };
       },
       showModal() {
@@ -211,15 +213,18 @@ const GroupSelect = React.createClass({
                  Groups <Icon type="down" />
                </Button>
              </Dropdown>
-             <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1100" style={{height:900}}>
+             <Modal key={this.state.newRandomKey} title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel}
+                width="1100" style={{height:1400,top:30}}>
                  <Tabs defaultActiveKey="1" type="card">
-                   <TabPane tab="Tab 1" key="1">
+                   <TabPane tab="实时曲线" key="1">
                       <RealTimeCharts topicName={"test_001"} groupName={"group_1"} ref="realTimeChart"/>
                    </TabPane>
-                   <TabPane tab="Tab 2" key="2">
+                   <TabPane tab="历史曲线" key="2">
                       <HisTimeCharts topicName={"test_001"} groupName={"group_1"} ref="hisTimeCharts"/>
                    </TabPane>
-                   <TabPane tab="Tab 3" key="3">Content of tab 3</TabPane>
+                   <TabPane tab="Cassandra 写入曲线" key="3">
+                      <CassandraCountCharts  topicName={"test_001"} groupName={"group_1"} ref="cassandraCountCharts"/>
+                   </TabPane>
                    <TabPane tab="Tab 4" key="4">Content of tab 4</TabPane>
                  </Tabs>
              </Modal>

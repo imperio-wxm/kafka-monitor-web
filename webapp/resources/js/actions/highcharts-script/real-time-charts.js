@@ -40,6 +40,7 @@ class RealTimeCharts extends React.Component {
              useUTC: false
         },
         chart: {
+             height:500,
              type: 'spline',
              animation: Highcharts.svg, // don't animate in old IE
              marginRight: 10,
