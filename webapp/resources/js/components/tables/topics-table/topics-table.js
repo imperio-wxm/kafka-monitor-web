@@ -4,12 +4,13 @@
 import React from 'react'
 
 import { Link } from 'react-router';
-import { Modal, Button,Icon,Collapse,Table,Tabs,Select } from 'antd';
+import { Modal, Button,Icon,Collapse,Table,Tabs,Select,Dropdown,Menu, message } from 'antd';
 const Option = Select.Option;
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
 import RealTimeCharts from '../../../actions/highcharts-script/real-time-charts.js'
+import HisTimeCharts from '../../../actions/highcharts-script/his-time-charts.js'
 
 const DetailsButton = React.createClass({
       getInitialState() {
@@ -155,7 +156,7 @@ const MonitorButton = React.createClass({
         return (
           <div>
             <Button onClick={this.showModal} size="small" type="dashed" style={{width:90}} ghost>Group</Button>
-            <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1200">
+            <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1100" hight="700">
               <Tabs defaultActiveKey="1" type="card">
                 <TabPane tab="Tab 1" key="1"><RealTimeCharts /></TabPane>
                 <TabPane tab="Tab 2" key="2">Content of tab 2</TabPane>
@@ -174,19 +175,54 @@ const GroupSelect = React.createClass({
           visible: false
         };
       },
-
+      handleOk() {
+        console.log('Clicked OK');
+        this.setState({
+          visible: false,
+        });
+      },
+      handleCancel(e) {
+        console.log(e);
+        this.setState({
+          visible: false,
+        });
+      },
       handleChange(value) {
         console.log(`selected ${value}`);
       },
-
+      handleMenuClick(e) {
+        console.log('click', e);
+        this.setState({
+          visible: true,
+        });
+      },
       render() {
+        const menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <Menu.Item key="1">1st menu item</Menu.Item>
+            <Menu.Item key="2">2nd menu item</Menu.Item>
+            <Menu.Item key="3">3d menu item</Menu.Item>
+          </Menu>
+        );
         return (
           <div>
-             <Select defaultValue="lucy" style={{ width: 130 }} onChange={this.handleChange}>
-               <Option value="jack"><MonitorButton /></Option>
-               <Option value="lucy"><MonitorButton /></Option>
-               <Option value="yiminghe"><MonitorButton /></Option>
-             </Select>
+             <Dropdown overlay={menu}>
+               <Button type="primary" ghost>
+                 Groups <Icon type="down" />
+               </Button>
+             </Dropdown>
+             <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1100" style={{height:900}}>
+                 <Tabs defaultActiveKey="1" type="card">
+                   <TabPane tab="Tab 1" key="1">
+                      <RealTimeCharts topicName={"test_001"} groupName={"group_1"} ref="realTimeChart"/>
+                   </TabPane>
+                   <TabPane tab="Tab 2" key="2">
+                      <HisTimeCharts topicName={"test_001"} groupName={"group_1"} ref="hisTimeCharts"/>
+                   </TabPane>
+                   <TabPane tab="Tab 3" key="3">Content of tab 3</TabPane>
+                   <TabPane tab="Tab 4" key="4">Content of tab 4</TabPane>
+                 </Tabs>
+             </Modal>
           </div>
         );
       },
