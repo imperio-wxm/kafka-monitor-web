@@ -5,10 +5,12 @@ import React from 'react'
 
 import { Link } from 'react-router';
 import { Modal, Button,Icon,Collapse,Table,Tabs,Select,Dropdown,Menu, message } from 'antd';
+import {findDOMNode} from 'react-dom'
 const Option = Select.Option;
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
+import HTTPUtil from '../../../actions/fetch/fetch.js'
 import RealTimeCharts from '../../../actions/highcharts-script/real-time-charts.js'
 import HisTimeCharts from '../../../actions/highcharts-script/his-time-charts.js'
 import CassandraCountCharts from '../../../actions/highcharts-script/cassandra-count-charts.js'
@@ -17,7 +19,6 @@ const DetailsButton = React.createClass({
       getInitialState() {
         return {
           visible: false,
-          newRandomKey: Math.random()
         };
       },
       showModal() {
@@ -85,8 +86,6 @@ const DetailsButton = React.createClass({
             dataList.push(temp);
         }
 
-        console.log(dataList);
-
         const topicInfoColumns = [{
               title: '属性',
               dataIndex: 'key',
@@ -130,108 +129,94 @@ const DetailsButton = React.createClass({
       },
 });
 
-const MonitorButton = React.createClass({
-      getInitialState() {
-        return {
-          visible: false
-        };
-      },
-      showModal() {
-        this.setState({
-          visible: true,
-        });
-      },
-      handleOk() {
+// group 选择组件
+class GroupSelect extends React.Component{
+
+      constructor(props) {
+          super(props);
+          this.state = {
+            newRandomKey: Math.random(),
+            visible: false,
+            groupList:[],
+            groupName:"",
+            topicName:""
+
+          }
+      }
+      handleOk = () => {
         console.log('Clicked OK');
         this.setState({
           visible: false,
         });
-      },
-      handleCancel(e) {
+      }
+      handleCancel = (e) => {
         console.log(e);
         this.setState({
           visible: false,
         });
-      },
-
-      render() {
-        return (
-          <div>
-            <Button onClick={this.showModal} size="small" type="dashed" style={{width:90}} ghost>Group</Button>
-            <Modal title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1100" hight="700">
-              <Tabs defaultActiveKey="1" type="card">
-                <TabPane tab="Tab 1" key="1"><RealTimeCharts /></TabPane>
-                <TabPane tab="Tab 2" key="2">Content of tab 2</TabPane>
-                <TabPane tab="Tab 3" key="3">Content of tab 3</TabPane>
-                <TabPane tab="Tab 4" key="4">Content of tab 4</TabPane>
-              </Tabs>
-            </Modal>
-          </div>
-        );
-      },
-});
-
-const GroupSelect = React.createClass({
-      getInitialState() {
-        return {
-          visible: false
-        };
-      },
-      handleOk() {
-        console.log('Clicked OK');
-        this.setState({
-          visible: false,
-        });
-      },
-      handleCancel(e) {
-        console.log(e);
-        this.setState({
-          visible: false,
-        });
-      },
-      handleChange(value) {
+      }
+      handleChange = (value) => {
         console.log(`selected ${value}`);
-      },
-      handleMenuClick(e) {
-        console.log('click', e);
+      }
+      handleMenuClick = (ev) => {
+        console.log(ev);
         this.setState({
           visible: true,
+          groupName:ev.key
         });
-      },
+      }
+      getGroupList = (ev,data) => {
+        let dataObj = JSON.parse(data);
+        console.log(dataObj);
+        this.setState({
+          groupList: dataObj.groups,
+          topicName:dataObj.topicName
+        });
+      }
+      clearContext = (e) => {
+          this.setState({
+            newRandomKey: Math.random(),
+          });
+      }
       render() {
-        const menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <Menu.Item key="1">1st menu item</Menu.Item>
-            <Menu.Item key="2">2nd menu item</Menu.Item>
-            <Menu.Item key="3">3d menu item</Menu.Item>
+        let dataObj = JSON.parse(this.props.data);
+
+        let menu = (
+          <Menu onClick={(ev) => {this.handleMenuClick(ev)}}>
+            {
+              //循环添加group
+              this.state.groupList.map((item, index)=>{
+                  return <Menu.Item key={item}>{item}</Menu.Item>
+              })
+            }
           </Menu>
         );
         return (
           <div>
-             <Dropdown overlay={menu}>
+             <Dropdown overlay={menu} trigger="click" onClick={(ev, topicName) => {this.getGroupList(ev, this.props.data)}}>
                <Button type="primary" ghost>
                  Groups <Icon type="down" />
                </Button>
              </Dropdown>
              <Modal key={this.state.newRandomKey} title={"监控"} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel}
-                width="1100" style={{height:1400,top:30}}>
-                 <Tabs defaultActiveKey="1" type="card">
+                width="1100" style={{height:1400,top:30}} afterClose={this.clearContext}>
+                 <Tabs defaultActiveKey="1" type="card" ref='monitorTabs'>
                    <TabPane tab="实时曲线" key="1">
-                      <RealTimeCharts topicName={"test_001"} groupName={"group_1"} ref="realTimeChart"/>
+                      <RealTimeCharts topicName={this.state.topicName} groupName={this.state.groupName} ref="realTimeChart"/>
                    </TabPane>
                    <TabPane tab="历史曲线" key="2">
-                      <HisTimeCharts topicName={"test_001"} groupName={"group_1"} ref="hisTimeCharts"/>
+                      <HisTimeCharts topicName={this.state.topicName} groupName={this.state.groupName} ref="hisTimeCharts"/>
                    </TabPane>
                    <TabPane tab="Cassandra 写入曲线" key="3">
-                      <CassandraCountCharts  topicName={"test_001"} groupName={"group_1"} ref="cassandraCountCharts"/>
+                      <CassandraCountCharts  topicName={this.state.topicName} groupName={this.state.groupName} ref="cassandraCountCharts"/>
                    </TabPane>
                    <TabPane tab="Tab 4" key="4">Content of tab 4</TabPane>
                  </Tabs>
              </Modal>
           </div>
         );
-      },
-});
+      }
+};
 
 function formatDate(datetime) {
     var year = datetime.getFullYear(),
@@ -242,32 +227,6 @@ function formatDate(datetime) {
     sec = datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds();
     return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
-
-const columns = [{
-  title: 'Topic Name',
-  dataIndex: 'topicName',
-},{
-  title: 'Partition Count',
-  dataIndex: 'partitionCount',
-},{
-  title: 'Create Time',
-  dataIndex: 'createdTimestamp',
-}, {
-  title: 'Modify Time',
-  dataIndex: 'modifyTimestamp',
-}, {
-  title: 'Is Active',
-  dataIndex: 'isActive',
-  render: (text) => <Icon type="check"  data={text}/>,
-}, {
-  title: 'Detailes',
-  dataIndex: 'detailes',
-  render: (text) => <DetailsButton data={text} />,
-}, {
-  title: 'Monitor Details',
-  dataIndex: 'monitorDetails',
-  render: (text) => <GroupSelect data={text} />,
-}];
 
 const data = [];
 
@@ -316,6 +275,36 @@ export default class TopicsTable extends React.Component{
             });
         })
 
+        let columns = [{
+          title: 'Topic Name',
+          dataIndex: 'topicName',
+        },{
+          title: 'Partition Count',
+          dataIndex: 'partitionCount',
+        },{
+          title: 'Create Time',
+          dataIndex: 'createdTimestamp',
+        }, {
+          title: 'Modify Time',
+          dataIndex: 'modifyTimestamp',
+        }, {
+          title: 'Is Active',
+          dataIndex: 'isActive',
+          render: (text) => {
+            console.log(JSON.parse(text));
+            if (JSON.parse(text).groups.length != 0) {
+               return <Icon type="check"/>
+            }
+          }
+        }, {
+          title: 'Detailes',
+          dataIndex: 'detailes',
+          render: (text) => <DetailsButton data={text} />,
+        }, {
+          title: 'Monitor Details',
+          dataIndex: 'monitorDetails',
+          render: (text,record) => <GroupSelect data={text} record={record} />,
+        }];
         return (
           <div>
               <Table columns={columns} dataSource={data} pagination={pagination} />

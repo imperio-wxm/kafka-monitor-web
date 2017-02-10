@@ -93,7 +93,7 @@ class RealTimeCharts extends React.Component {
              }
          },
          title: {
-             text: this.props.topicName
+             text: this.props.groupName + "-" + this.props.topicName
          },
          xAxis: {
              type: 'datetime',

@@ -149,7 +149,7 @@ class CassandraCountCharts extends React.Component {
                   selected: 0
                },
                title: {
-                 text: topicName
+                 text: this.props.groupName + "-" + this.props.topicName
                },
 							 yAxis: {
 									 title: {
