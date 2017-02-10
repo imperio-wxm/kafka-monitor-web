@@ -69,7 +69,7 @@ const DetailsButton = React.createClass({
         for(var o in dataObj) {
             let temp = [];
 
-            if (index === 0 || index === 4) {
+            if (index === 0 || index === 4 || index === 5) {
               index++;
               continue;
             } else if (index === 2) {
@@ -79,7 +79,7 @@ const DetailsButton = React.createClass({
               temp.push(keyName[index]);
               temp.push(formatDate(new Date(parseInt(dataObj[o],10))));
             } else {
-              temp.push(keyName[index]);
+              temp.push(keyName[index-1]);
               temp.push(dataObj[o]);
             }
             index++;
@@ -113,7 +113,8 @@ const DetailsButton = React.createClass({
               onCancel={this.handleCancel} okText="OK" >
               {
                 dataList.map((item, index)=>{
-                  if (index != 0 || index != 4) {
+                  console.log(item[0]);
+                  if (index != 0 || index != 4 || index != 5) {
                     topicInfo.push({
                       key: `${item[0]}`,
                       value: `${item[1]}`
@@ -194,7 +195,8 @@ class GroupSelect extends React.Component{
         return (
           <div>
              <Dropdown overlay={menu} trigger="click" onClick={(ev, topicName) => {this.getGroupList(ev, this.props.data)}}>
-               <Button type="primary" ghost>
+               <Button type={JSON.parse(this.props.data).groups.length==0?"":"primary"}
+                       disabled={JSON.parse(this.props.data).groups.length==0?true:false}>
                  Groups <Icon type="down" />
                </Button>
              </Dropdown>
